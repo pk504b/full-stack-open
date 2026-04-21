@@ -41,6 +41,9 @@ function App() {
       setNewNumber('')
       setNotification(`Added ${newPerson.name}`)
       setTimeout(() => setNotification(''), 2000)
+    }).catch((error) => {
+      setError(error.response.data.error)
+      setTimeout(() => setError(''), 2000)
     })
   }
 

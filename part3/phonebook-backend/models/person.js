@@ -6,7 +6,11 @@ mongoose.connect(process.env.MONGO_URI, { family: 4 })
   .catch(err => console.error(err))
 
 const personSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    minlength: 3,
+  },
   number: String
 })
 
