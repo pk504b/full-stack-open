@@ -11,7 +11,17 @@ const personSchema = new mongoose.Schema({
     required: true,
     minlength: 3,
   },
-  number: String
+  number: {
+    type: String,
+    minlength: 8,
+    required: [true, 'Missing phone number'],
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
+      },
+      message: 'Invalid phone number format',
+    }
+  }
 })
 
 personSchema.set('toJSON', {
