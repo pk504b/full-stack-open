@@ -64,14 +64,13 @@ app.post('/api/persons', (req, res) => {
     return
   }
 
-  if (data.find(p => p.name === person.name)) {
-    res.status(400).json({ error: "Name already exists" })
-    return
-  }
-
-  person.id = Math.floor(Math.random() * 10000);
-  data.push(person)
-  res.json(person)
+  // if (data.find(p => p.name === person.name)) {
+  //   res.status(400).json({ error: "Name already exists" })
+  //   return
+  // }
+  Person.create(person).then(person => {
+    res.json(person)
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
