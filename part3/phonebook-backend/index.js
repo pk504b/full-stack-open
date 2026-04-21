@@ -40,13 +40,27 @@ app.post('/api/persons', (req, res) => {
     return
   }
 
-  // if (data.find(p => p.name === person.name)) {
-  //   res.status(400).json({ error: "Name already exists" })
-  //   return
-  // }
   Person.create(person).then(person => {
     res.json(person)
-  })
+  }).catch(err => next(err))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+  const { name, number } = req.body
+
+  Person.findById(id).then(person => {
+    if (!person) {
+      return res.status(404).end()
+    }
+
+    person.name = name
+    person.number = number
+
+    return person.save().then(updatedPerson => {
+      res.json(updatedPerson)
+    })
+  }).catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
