@@ -1,5 +1,5 @@
 require('dotenv').config()
-const express = require("express")
+const express = require('express')
 const morgan = require('morgan')
 const Person = require('./models/person')
 
@@ -8,15 +8,17 @@ app.use(express.json())
 app.use(express.static('dist'))
 
 morgan.token('body', (req) => {
-  return req.method === 'POST' ? JSON.stringify(req.body) : '';
-});
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+  return req.method === 'POST' ? JSON.stringify(req.body) : ''
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-app.get('/info', (req, res) => {
-  res.send(`
-    <p>Phonebook has info for ${data.length} persons</p>
-    <p>${new Date()}</p>
-  `)
+app.get('/info', (req, res, next) => {
+  Person.find({}).then(persons => {
+    res.send(`
+      <p>Phonebook has info for ${persons.length} persons</p>
+      <p>${new Date()}</p>
+    `)
+  }).catch(err => next(err))
 })
 
 app.get('/api/persons', (req, res, next) => {
@@ -36,7 +38,7 @@ app.post('/api/persons', (req, res, next) => {
   const person = req.body
 
   if (!person.name || !person.number) {
-    res.status(400).json({ error: "Missing name or number" })
+    res.status(400).json({ error: 'Missing name or number' })
     return
   }
 
@@ -65,7 +67,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
-  Person.findByIdAndDelete(id).then(person => {
+  Person.findByIdAndDelete(id).then(() => {
     res.status(204).end()
   }).catch(err => next(err))
 })
