@@ -49,12 +49,11 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id
-  const person = data.find(person => person.id === id)
-  if (person) {
+  Person.findById(id).then(person => {
     res.json(person)
-  } else {
+  }).catch(err => {
     res.status(404).end()
-  }
+  })
 })
 
 app.post('/api/persons', (req, res) => {
