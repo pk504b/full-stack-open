@@ -90,6 +90,23 @@ describe('POST /api/blogs', () => {
     assert.strictEqual(blogs.length, initialBlogs.length + 1)
     assert(blogs.map(blog => blog.title).includes(newBlog.title))
   })
+
+  test('likes default to zero', async () => {
+    const newBlog = {
+      title: "New blog",
+      author: "New author",
+      url: "https://new-blog.com/",
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+      
+    const savedBlog = response.body
+    assert.strictEqual(savedBlog.likes, 0)
+  })
 })
 
 after(async () => {
