@@ -107,6 +107,19 @@ describe('POST /api/blogs', () => {
     const savedBlog = response.body
     assert.strictEqual(savedBlog.likes, 0)
   })
+
+  test('returns 400 if title or url missing', async () => {
+    const newBlog = {
+      author: "New author",
+      url: "https://new-blog.com/",
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
 after(async () => {
