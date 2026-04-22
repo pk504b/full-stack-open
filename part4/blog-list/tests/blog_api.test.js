@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
@@ -54,13 +55,13 @@ describe('GET /api/blogs', () => {
 
   test('returns all blogs', async () => {
     const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length, initialBlogs.length)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
 
   test('a specific is within the response', async () => {
     const response = await api.get('/api/blogs')
     const firstBlog = response.body[0]
-    assert.strictEqual(firstBlog.title, initialBlogs[0].title)
+    assert.strictEqual(firstBlog.title, helper.initialBlogs[0].title)
   })
 
   test('return id property', async () => {
@@ -79,16 +80,17 @@ describe('POST /api/blogs', () => {
       likes: 0,
     }
 
-    await api
+    const response = await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
-    const blogs = response.body
-    assert.strictEqual(blogs.length, initialBlogs.length + 1)
-    assert(blogs.map(blog => blog.title).includes(newBlog.title))
+    // const
+    const blogsAtEnd = await helper.blogsInDB()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+    assert(blogsAtEnd.map(blog => blog.title).includes(newBlog.title))
   })
 
   test('likes default to zero', async () => {
@@ -119,6 +121,19 @@ describe('POST /api/blogs', () => {
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)
+  })
+})
+
+describe('DELETE /api/blogs/:id', () => {
+  test('deletes a blog', async () => {
+    const blogsAtStart = await helper.blogsInDB()
+    const blogToDelete = blogsAtStart[0]
+    await api
+      .delete(`/api/blogs/${blogToDelete._id}`)
+      .expect(204)
+    const blogsAfterDelete = await helper.blogsInDB()
+    assert(!blogsAfterDelete.map(blog => blog._id).includes(blogToDelete.id))
+    assert.strictEqual(blogsAfterDelete.length, blogsAtStart.length - 1)
   })
 })
 
