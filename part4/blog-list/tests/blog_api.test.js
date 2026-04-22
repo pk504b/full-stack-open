@@ -62,6 +62,12 @@ describe('GET /api/blogs', () => {
     const firstBlog = response.body[0]
     assert.strictEqual(firstBlog.title, initialBlogs[0].title)
   })
+
+  test('return id property', async () => {
+    const response = await api.get('/api/blogs')
+    const firstBlog = response.body[0]
+    assert.strictEqual(firstBlog.hasOwnProperty('id'), true)
+  })
 })
 
 after(async () => {
