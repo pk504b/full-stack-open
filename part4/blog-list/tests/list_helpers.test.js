@@ -79,7 +79,6 @@ describe('total likes', () => {
   })
 })
 
-
 describe('favorite blog', () => {
   test('of empty list is undefined', () => {
     const blogs = []
@@ -120,6 +119,31 @@ describe('most blogs', () => {
     assert.deepStrictEqual(result, {
       author: "Robert C. Martin",
       blogs: 3
+    })
+  })
+})
+
+describe('most likes', () => {
+  test('of empty list is undefined', () => {
+    const blogs = []
+
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, undefined)
+  })
+
+  test('of list with one blog is the author of that blog with count equals likes on that blog', () => {
+    const result = listHelper.mostLikes([blogs[0]])
+    assert.deepStrictEqual(result, {
+      author: "Michael Chan",
+      likes: 7,
+    })
+  })
+
+  test('of a bigger list is is calculated and returned in correct format', () => {
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, {
+      author: "Edsger W. Dijkstra",
+      likes: 17,
     })
   })
 })
