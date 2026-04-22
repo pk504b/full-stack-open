@@ -48,8 +48,8 @@ beforeEach(async () => {
 describe('GET /api/blogs', () => {
   test('returns data in json format', async () => {
     await api.get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
 
   test('returns all blogs', async () => {
@@ -67,6 +67,28 @@ describe('GET /api/blogs', () => {
     const response = await api.get('/api/blogs')
     const firstBlog = response.body[0]
     assert.strictEqual(firstBlog.hasOwnProperty('id'), true)
+  })
+})
+
+describe('POST /api/blogs', () => {
+  test('adds a valid blog', async () => {
+    const newBlog = {
+      title: "New blog",
+      author: "New author",
+      url: "https://new-blog.com/",
+      likes: 0,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    assert.strictEqual(blogs.length, initialBlogs.length + 1)
+    assert(blogs.map(blog => blog.title).includes(newBlog.title))
   })
 })
 
