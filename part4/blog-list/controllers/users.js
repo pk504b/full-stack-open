@@ -1,13 +1,13 @@
 const User = require("../models/user")
-const blogsRouter = require('express').Router()
+const userRouter = require('express').Router()
 const bcrypt = require("bcrypt")
 
-blogsRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+userRouter.get('/', async (request, response) => {
+  const users = await User.find({}).populate('blogs', { user: 0 })
   response.json(users)
 })
 
-blogsRouter.post('/', async (request, response) => {
+userRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
   if (!username || !password) {
     return response.status(400).json({ error: "username or password missing" })
@@ -21,4 +21,4 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser)
 })
 
-module.exports = blogsRouter
+module.exports = userRouter
