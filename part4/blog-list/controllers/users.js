@@ -9,8 +9,11 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
-  if (!username || !name || !password) {
-    return response.status(400).json({ error: "username, name, and password are required" })
+  if (!username || !password) {
+    return response.status(400).json({ error: "username or password missing" })
+  }
+  if (password.length < 3) {
+    return response.status(400).json({ error: "password must be at least 3 characters" })
   }
   const hashedPassword = await bcrypt.hash(password, 10)
   const newUser = new User({ username, name, passwordHash: hashedPassword })
