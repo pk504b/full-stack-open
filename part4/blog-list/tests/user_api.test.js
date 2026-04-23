@@ -5,12 +5,49 @@ const app = require('../app')
 const User = require('../models/user')
 const helper = require('./test_helper')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await User.deleteMany({})
-  await User.insertMany(helper.initialUsers)
+  
+  const userObjects = await Promise.all(helper.initialUsers.map(async (user) => {
+    const passwordHash = await bcrypt.hash(user.password, 10)
+    return { ...user, passwordHash }
+  }))
+  await User.insertMany(userObjects)
+})
+
+describe('login endpoint', () => {
+  test('returns a token', async () => {
+    const loginUser = {
+      username: helper.initialUsers[0].username,
+      password: helper.initialUsers[0].password,
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(loginUser)
+      .expect(200)
+
+    // assert.strictEqual(response.body.token.length, 130)
+  })
+
+  test('returns a 401 if username or password is invalid', async () => {
+    const loginUser = {
+      username: "invalid-user",
+      password: "invalid-password",
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(loginUser)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(response.body.error, 'invalid username or password')
+  })
 })
 
 describe('user creation api', () => {
@@ -74,6 +111,8 @@ describe('user creation api', () => {
   })
 
   test('create a user on valid input', async () => {
+    const usersAtStart = await helper.usersInDB()
+    
     const newUser = {
       username: "new-user",
       name: "New User",
@@ -87,7 +126,7 @@ describe('user creation api', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDB()
-    assert.strictEqual(usersAtEnd.length, helper.initialUsers.length + 1)
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
     assert(usersAtEnd.map(user => user.username).includes(newUser.username))
   })
 })

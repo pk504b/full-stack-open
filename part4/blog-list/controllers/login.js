@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt")
 const loginRouter = require("express").Router()
 
 loginRouter.post("/", async (request, response) => {
-  const { username, password } = request.body
+  const { username, password } = request.body || {}
 
   if (!username || !password) {
     return response.status(400).json({ error: "username or password missing" })
@@ -13,9 +13,9 @@ loginRouter.post("/", async (request, response) => {
 
   const user = await User.findOne({ username })
 
-  const isPasswordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.passwordHash)
+  const isPasswordCorrect = (user && user.passwordHash)
+    ? await bcrypt.compare(password, user.passwordHash)
+    : false
 
   if (!(user && isPasswordCorrect)) {
     return response.status(401).json({

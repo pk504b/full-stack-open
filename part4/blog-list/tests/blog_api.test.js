@@ -7,43 +7,30 @@ const Blog = require('../models/blog')
 const helper = require('./test_helper')
 
 const api = supertest(app)
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
-const initialBlogs = [
-  {
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-  },
-  {
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-  },
-  {
-    title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
-  },
-  {
-    title: "First class tests",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-    likes: 10,
-  },
-  {
-    title: "TDD harms architecture",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-    likes: 0,
-  },
-]
+let token
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(initialBlogs)
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('password123', 10)
+  const user = new User({ username: 'testuser', passwordHash })
+  await user.save()
+
+  const blogsWithUser = helper
+    .initialBlogs
+    .map(blog => ({ ...blog, user: user.id }))
+
+  await Blog.insertMany(blogsWithUser)
+
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'testuser', password: 'password123' })
+
+  token = loginResponse.body.token
 })
 
 describe('GET /api/blogs', () => {
@@ -72,7 +59,7 @@ describe('GET /api/blogs', () => {
 })
 
 describe('POST /api/blogs', () => {
-  test('adds a valid blog', async () => {
+  test('adds a valid blog', async () => {    
     const newBlog = {
       title: "New blog",
       author: "New author",
@@ -80,13 +67,13 @@ describe('POST /api/blogs', () => {
       likes: 0,
     }
 
-    const response = await api
+    await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    // const
     const blogsAtEnd = await helper.blogsInDB()
 
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
@@ -102,6 +89,7 @@ describe('POST /api/blogs', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -119,6 +107,7 @@ describe('POST /api/blogs', () => {
     const response = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
@@ -130,6 +119,7 @@ describe('DELETE /api/blogs/:id', () => {
     const blogToDelete = blogsAtStart[0]
     await api
       .delete(`/api/blogs/${blogToDelete._id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
     const blogsAfterDelete = await helper.blogsInDB()
     assert(!blogsAfterDelete.map(blog => blog._id).includes(blogToDelete.id))
