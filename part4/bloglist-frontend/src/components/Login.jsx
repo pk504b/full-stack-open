@@ -10,7 +10,7 @@ export default function Login({ setUser }) {
 
     try {
       const response = await loginService.login({ username, password })
-      console.log(response)
+      localStorage.setItem('bloglist-user', JSON.stringify(response))
       setUser(response)
       setUsername('')
       setPassword('')

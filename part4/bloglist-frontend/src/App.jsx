@@ -7,10 +7,22 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
+  const handleLogout = () => {
+    localStorage.removeItem('bloglist-user')
+    setUser(null)
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
+  }, [])
+
+  useEffect(() => {
+    const user = localStorage.getItem('bloglist-user')
+    if (user) {
+      setUser(JSON.parse(user))
+    }
   }, [])
 
   if (!user) {
@@ -20,7 +32,9 @@ const App = () => {
   return (
     <div>
         <h2>blogs</h2>
-        <p>logged in as {user.username}</p>
+        <p>logged in as {user.username}
+        <button onClick={handleLogout}>logout</button>
+        </p>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
