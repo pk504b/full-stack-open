@@ -5,6 +5,7 @@ export default function AddBlog({ setBlogs, setNotification, setError }) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [showForm, setShowForm] = useState(false)
 
   const handleAddBlog = async (e) => {
     e.preventDefault()
@@ -23,6 +24,8 @@ export default function AddBlog({ setBlogs, setNotification, setError }) {
       setTimeout(() => setError(''), 2000)
     }
   }
+
+  if (!showForm) return <button onClick={() => setShowForm(true)}>add new blog</button>
 
   return (
     <div>
@@ -45,6 +48,10 @@ export default function AddBlog({ setBlogs, setNotification, setError }) {
         </label>
         <br />
         <button type="submit">add</button>
+        <button onClick={(e) => {
+          e.preventDefault()
+          setShowForm(false)
+        }}>cancel</button>
       </form>
       <br />
     </div>
