@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const Blog = ({ blog, incrementLike }) => {
   const [expanded, setExpanded] = useState(false);
-  
+
   return (
     <div style={{
       border: "1px solid black",
@@ -19,6 +19,7 @@ const Blog = ({ blog, incrementLike }) => {
         <div>
           {blog.url} <br />
           {blog.likes} <button onClick={() => incrementLike(blog.id, blog)}>like</button>
+          <br />
           {blog.author}
         </div>
       )}

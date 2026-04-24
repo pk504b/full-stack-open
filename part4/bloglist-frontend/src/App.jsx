@@ -16,7 +16,8 @@ const App = () => {
       likes: blog.likes + 1
     }
     const returnedBlog = await blogService.incrementLike(blog.id, updatedBlog);
-    setBlogs(blogs => blogs.map(blog => blog.id === id ? returnedBlog : blog));
+    const updatedBlogs = blogs.map(blog => blog.id === id ? returnedBlog : blog);
+    setBlogs(updatedBlogs.sort((a, b) => b.likes - a.likes));
   };
 
   const handleLogout = () => {
@@ -25,9 +26,12 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    async function getBlogs() {
+      const blogs = await blogService.getAll()
+      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+      setBlogs(sortedBlogs)
+    }
+    getBlogs()
   }, [])
 
   useEffect(() => {
