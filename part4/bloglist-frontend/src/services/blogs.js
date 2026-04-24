@@ -32,4 +32,13 @@ const incrementLike = async (id, blog) => {
   return response.data
 }
 
-export default { getAll, add, setToken, incrementLike }
+const removeBlog = async (id) => {
+  const config = {
+    headers: {
+      'Authorization': token
+    }
+  }
+  await axios.delete(`${baseUrl}/${id}`, config)
+}
+
+export default { getAll, add, setToken, incrementLike, removeBlog }

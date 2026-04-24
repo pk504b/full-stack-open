@@ -16,8 +16,18 @@ const App = () => {
       likes: blog.likes + 1
     }
     const returnedBlog = await blogService.incrementLike(blog.id, updatedBlog);
-    const updatedBlogs = blogs.map(blog => blog.id === id ? returnedBlog : blog);
-    setBlogs(updatedBlogs.sort((a, b) => b.likes - a.likes));
+    const updatedBlogs = blogs.map(blog => blog.id === id ? returnedBlog : blog).sort((a, b) => b.likes - a.likes);
+    setBlogs(updatedBlogs);
+  };
+
+  const removeBlog = async (id) => {
+    const blogToRemove = blogs.find(blog => blog.id === id);
+    const confirmation = confirm(`Remove ${blogToRemove.title} by ${blogToRemove.author}?`);
+    if (!confirmation) return;
+
+    await blogService.removeBlog(id);
+    const updatedBlogs = blogs.filter(blog => blog.id !== id).sort((a, b) => b.likes - a.likes);
+    setBlogs(updatedBlogs);
   };
 
   const handleLogout = () => {
@@ -57,7 +67,7 @@ const App = () => {
         </p>
         <AddBlog setBlogs={setBlogs} setNotification={setNotification} setError={setError} />
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} incrementLike={incrementLike} />
+          <Blog key={blog.id} blog={blog} incrementLike={incrementLike} removeBlog={removeBlog} />
         )}
     </div>
   )
