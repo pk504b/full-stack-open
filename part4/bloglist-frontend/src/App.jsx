@@ -7,6 +7,8 @@ import AddBlog from './components/AddBlog'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState('')
+  const [error, setError] = useState('')
 
   const handleLogout = () => {
     localStorage.removeItem('bloglist-user')
@@ -29,16 +31,18 @@ const App = () => {
   }, [])
 
   if (!user) {
-    return <Login setUser={setUser} />
+    return <Login setUser={setUser} notification={notification} error={error} setNotification={setNotification} setError={setError} />
   }
 
   return (
     <div>
         <h2>blogs</h2>
+        {notification && <div style={{ backgroundColor: "#1fda1f", padding: "10px" }}>{notification}</div>}
+        {error && <div style={{ backgroundColor: "#ff5555", padding: "10px" }}>{error}</div>}
         <p>logged in as {user.username}
         <button onClick={handleLogout}>logout</button>
         </p>
-        <AddBlog setBlogs={setBlogs} />
+        <AddBlog setBlogs={setBlogs} setNotification={setNotification} setError={setError} />
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}

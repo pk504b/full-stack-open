@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-export default function AddBlog({ setBlogs }) {
+export default function AddBlog({ setBlogs, setNotification, setError }) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -15,8 +15,12 @@ export default function AddBlog({ setBlogs }) {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setNotification(`Added ${savedBlog.title}`)
+      setTimeout(() => setNotification(''), 2000)
     } catch (error) {
       console.log(error)
+      setError(error.response.data.error)
+      setTimeout(() => setError(''), 2000)
     }
   }
 
