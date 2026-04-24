@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, incrementLike }) => {
   const [expanded, setExpanded] = useState(false);
+  
   return (
     <div style={{
       border: "1px solid black",
@@ -17,7 +18,7 @@ const Blog = ({ blog }) => {
       {expanded && (
         <div>
           {blog.url} <br />
-          {blog.likes} <button>like</button> <br />
+          {blog.likes} <button onClick={() => incrementLike(blog.id, blog)}>like</button>
           {blog.author}
         </div>
       )}

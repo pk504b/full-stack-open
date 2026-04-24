@@ -10,6 +10,15 @@ const App = () => {
   const [notification, setNotification] = useState('')
   const [error, setError] = useState('')
 
+  const incrementLike = async (id, blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1
+    }
+    const returnedBlog = await blogService.incrementLike(blog.id, updatedBlog);
+    setBlogs(blogs => blogs.map(blog => blog.id === id ? returnedBlog : blog));
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('bloglist-user')
     setUser(null)
@@ -44,7 +53,7 @@ const App = () => {
         </p>
         <AddBlog setBlogs={setBlogs} setNotification={setNotification} setError={setError} />
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} incrementLike={incrementLike} />
         )}
     </div>
   )
