@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from "react"
 
 const Blog = ({ blog, incrementLike, removeBlog }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false)
 
   return (
     <div style={{
@@ -26,7 +26,7 @@ const Blog = ({ blog, incrementLike, removeBlog }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

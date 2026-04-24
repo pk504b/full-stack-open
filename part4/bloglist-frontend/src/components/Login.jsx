@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import loginService from '../services/login'
-import blogService from '../services/blogs'
+import { useState } from "react"
+import loginService from "../services/login"
+import blogService from "../services/blogs"
 
 export default function Login({ setUser, notification, error, setNotification, setError }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     try {
       const response = await loginService.login({ username, password })
-      localStorage.setItem('bloglist-user', JSON.stringify(response))
+      localStorage.setItem("bloglist-user", JSON.stringify(response))
       blogService.setToken(response.token)
       setUser(response)
-      setUsername('')
-      setPassword('')
+      setUsername("")
+      setPassword("")
       setNotification(`Logged in as ${response.username}`)
-      setTimeout(() => setNotification(''), 2000)
+      setTimeout(() => setNotification(""), 2000)
     } catch (error) {
       console.log(error)
       setError(error.response.data.error)
-      setTimeout(() => setError(''), 2000)
+      setTimeout(() => setError(""), 2000)
     }
   }
 

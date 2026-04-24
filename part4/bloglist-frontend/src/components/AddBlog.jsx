@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import blogService from '../services/blogs'
+import { useState } from "react"
+import blogService from "../services/blogs"
 
 export default function AddBlog({ setBlogs, setNotification, setError }) {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [title, setTitle] = useState("")
+  const [author, setAuthor] = useState("")
+  const [url, setUrl] = useState("")
   const [showForm, setShowForm] = useState(false)
 
   const handleAddBlog = async (e) => {
@@ -13,15 +13,15 @@ export default function AddBlog({ setBlogs, setNotification, setError }) {
     try {
       const savedBlog = await blogService.add({ title, author, url })
       setBlogs(blogs => [...blogs, savedBlog])
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      setTitle("")
+      setAuthor("")
+      setUrl("")
       setNotification(`Added ${savedBlog.title}`)
-      setTimeout(() => setNotification(''), 2000)
+      setTimeout(() => setNotification(""), 2000)
     } catch (error) {
       console.log(error)
       setError(error.response.data.error)
-      setTimeout(() => setError(''), 2000)
+      setTimeout(() => setError(""), 2000)
     }
   }
 
