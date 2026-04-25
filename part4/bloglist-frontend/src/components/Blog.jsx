@@ -11,7 +11,7 @@ const Blog = ({ blog, incrementLike, removeBlog }) => {
     }}>
       <div>
         {blog.title} {blog.author}
-        <button onClick={() => setExpanded(!expanded)}>
+        <button className="toggleBlog" onClick={() => setExpanded(!expanded)}>
           {expanded ? "hide" : "show"}
         </button>
       </div>
@@ -19,7 +19,7 @@ const Blog = ({ blog, incrementLike, removeBlog }) => {
       {expanded && (
         <div>
           {blog.url} <br />
-          {blog.likes} <button onClick={() => incrementLike(blog.id, blog)}>like</button>
+          {blog.likes} likes <button onClick={() => incrementLike(blog.id, blog)}>like</button>
           <br />
           {blog.user.name}
           <br />

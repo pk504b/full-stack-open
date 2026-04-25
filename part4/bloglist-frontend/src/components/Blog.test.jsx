@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import Blog from "./Blog"
 import { test } from "vitest"
 
@@ -23,6 +24,18 @@ describe("Blog", () => {
     expect(screen.queryByText("https://testurl.com", { exact: false })).toBeNull()
     expect(screen.queryByText("0 likes", { exact: false })).toBeNull()
     expect(screen.queryByText("test user", { exact: false })).toBeNull()
+  })
+  test("should render also url, likes, username when expanded", async () => {
+    render(<Blog blog={testBlog}  />)
+
+    const expandButton = screen.getByText("show")
+    await userEvent.click(expandButton)
+
+    expect(screen.getByText("test title", { exact: false })).toBeDefined()
+    expect(screen.getByText("test author", { exact: false })).toBeDefined()
+    expect(screen.getByText("https://testurl.com", { exact: false })).toBeDefined()
+    expect(screen.getByText("0 likes", { exact: false })).toBeDefined()
+    expect(screen.getByText("test user", { exact: false })).toBeDefined()
   })
 })
 
