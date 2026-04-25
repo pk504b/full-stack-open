@@ -31,7 +31,7 @@ const App = () => {
     if (!user) return
     try {
       const savedBlog = await blogService.add({ title, author, url })
-      setBlogs(blogs => [...blogs, { savedBlog, user }])
+      setBlogs(blogs => [...blogs, { ...savedBlog, user }])
       setNotification(`Added ${savedBlog.title}`)
       setTimeout(() => setNotification(""), 2000)
     } catch (error) {

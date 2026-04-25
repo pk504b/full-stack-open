@@ -4,11 +4,11 @@ import AddBlog from "./AddBlog"
 import { test } from "vitest"
 
 describe("Add Blog Form", () => {
-  test("should render title and author only", async () => {
+  test("should call addBlog with correct data", async () => {
     const user = userEvent.setup()
     const mockHandler = vi.fn()
 
-    render(<AddBlog onSubmit={mockHandler} />)
+    render(<AddBlog addBlog={mockHandler} />)
     // Click `add new blog` button
     await user.click(screen.getByText("add new blog"))
     // Get the form elements
