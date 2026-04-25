@@ -1,27 +1,21 @@
 import { useState } from "react"
-import blogService from "../services/blogs"
 
-export default function AddBlog({ setBlogs, setNotification, setError }) {
+export default function AddBlog({ addBlog }) {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
   const [showForm, setShowForm] = useState(false)
 
-  const handleAddBlog = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
     try {
-      const savedBlog = await blogService.add({ title, author, url })
-      setBlogs(blogs => [...blogs, savedBlog])
+      await addBlog({ title, author, url })
       setTitle("")
       setAuthor("")
       setUrl("")
-      setNotification(`Added ${savedBlog.title}`)
-      setTimeout(() => setNotification(""), 2000)
+      setShowForm(false)
     } catch (error) {
       console.log(error)
-      setError(error.response.data.error)
-      setTimeout(() => setError(""), 2000)
     }
   }
 
@@ -31,7 +25,7 @@ export default function AddBlog({ setBlogs, setNotification, setError }) {
     <div>
       <h2>add blog</h2>
 
-      <form onSubmit={handleAddBlog}>
+      <form onSubmit={handleSubmit}>
         <label>
           title
           <input type="text" value={title} onChange={e => setTitle(e.target.value)} />

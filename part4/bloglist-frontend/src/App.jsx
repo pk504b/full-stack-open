@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import Blog from "./components/Blog"
 import blogService from "./services/blogs"
+import loginService from "./services/login"
 import Login from "./components/Login"
 import AddBlog from "./components/AddBlog"
 
@@ -9,6 +10,36 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState("")
   const [error, setError] = useState("")
+
+  const loginUser = async ({ username, password }) => {
+    if (!username || !password) return
+    try {
+      const response = await loginService.login({ username, password })
+      localStorage.setItem("bloglist-user", JSON.stringify(response))
+      blogService.setToken(response.token)
+      setUser(response)
+      setNotification(`Logged in as ${response.username}`)
+      setTimeout(() => setNotification(""), 2000)
+    } catch (error) {
+      setError(error.response.data.error)
+      setTimeout(() => setError(""), 2000)
+      throw error
+    }
+  }
+
+  const addBlog = async ({ title, author, url }) => {
+    if (!user) return
+    try {
+      const savedBlog = await blogService.add({ title, author, url })
+      setBlogs(blogs => [...blogs, savedBlog])
+      setNotification(`Added ${savedBlog.title}`)
+      setTimeout(() => setNotification(""), 2000)
+    } catch (error) {
+      setError(error.response.data.error)
+      setTimeout(() => setError(""), 2000)
+      throw error
+    }
+  }
 
   const incrementLike = async (id, blog) => {
     const updatedBlog = {
@@ -36,6 +67,14 @@ const App = () => {
   }
 
   useEffect(() => {
+    // Get user from localStorage
+    const loggedUserJSON = window.localStorage.getItem("bloglist-user")
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+    // Get blogs
     async function getBlogs() {
       const blogs = await blogService.getAll()
       const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
@@ -44,17 +83,8 @@ const App = () => {
     getBlogs()
   }, [])
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("bloglist-user")
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   if (!user) {
-    return <Login setUser={setUser} notification={notification} error={error} setNotification={setNotification} setError={setError} />
+    return <Login loginUser={loginUser} />
   }
 
   return (
@@ -65,7 +95,7 @@ const App = () => {
       <p>logged in as {user.username}
         <button onClick={handleLogout}>logout</button>
       </p>
-      <AddBlog setBlogs={setBlogs} setNotification={setNotification} setError={setError} />
+      <AddBlog addBlog={addBlog} />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} incrementLike={incrementLike} removeBlog={removeBlog} />
       )}
