@@ -39,4 +39,24 @@ describe('Blog app', () => {
       await expect(page.getByRole('heading', { name: 'blogs' })).not.toBeVisible()
     })
   })
+
+  describe('when logged in', () => {  
+    beforeEach(async ({ page }) => {
+      const loginForm = page.locator('form')
+      await loginForm.getByLabel('username').fill('user1')
+      await loginForm.getByLabel('password').fill('password1')
+      await loginForm.locator('button', { hasText: 'Login' }).click()
+    })
+    test('add blog succeeds with correct data', async ({ page }) => {
+      const formToggleBtn = page.locator('button', { hasText: 'add new blog' })
+      await formToggleBtn.click()
+      const addBlogForm = page.locator('form')
+      await addBlogForm.getByLabel('title').fill('Blog 1')
+      await addBlogForm.getByLabel('author').fill('Author 1')
+      await addBlogForm.getByLabel('url').fill('https://example.com')
+      await addBlogForm.locator('button', { hasText: 'add' }).click()
+      await expect(page.getByText('Added Blog 1', { exact: true })).toBeVisible()
+      await expect(page.getByText('Blog 1 Author 1')).toBeVisible()
+    })
+  })
 })

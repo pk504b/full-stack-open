@@ -78,7 +78,7 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 
-  timeout: 3000,
+  // timeout: 3000,
   fullyParallel: false,
   workers: 1,
 });
