@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, showFormAndAddBlog } = require('./helpers')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -23,40 +24,31 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      const loginForm = page.locator('form')
-      await loginForm.getByLabel('username').fill('user1')
-      await loginForm.getByLabel('password').fill('password1')
-      await loginForm.locator('button', { hasText: 'Login' }).click()
+      await loginWith(page, 'user1', 'password1')
       await expect(page.getByText('Logged in as user1', { exact: true })).toBeVisible()
       await expect(page.getByRole('heading', { name: 'blogs' })).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      const loginForm = page.locator('form')
-      await loginForm.getByLabel('username').fill('user1')
-      await loginForm.getByLabel('password').fill('wrongpassword')
-      await loginForm.locator('button', { hasText: 'Login' }).click()
+      await loginWith(page, 'user1', 'wrongpassword')
       await expect(page.getByRole('heading', { name: 'blogs' })).not.toBeVisible()
     })
   })
 
   describe('when logged in', () => {  
     beforeEach(async ({ page }) => {
-      const loginForm = page.locator('form')
-      await loginForm.getByLabel('username').fill('user1')
-      await loginForm.getByLabel('password').fill('password1')
-      await loginForm.locator('button', { hasText: 'Login' }).click()
+      loginWith(page, 'user1', 'password1')
     })
     test('add blog succeeds with correct data', async ({ page }) => {
-      const formToggleBtn = page.locator('button', { hasText: 'add new blog' })
-      await formToggleBtn.click()
-      const addBlogForm = page.locator('form')
-      await addBlogForm.getByLabel('title').fill('Blog 1')
-      await addBlogForm.getByLabel('author').fill('Author 1')
-      await addBlogForm.getByLabel('url').fill('https://example.com')
-      await addBlogForm.locator('button', { hasText: 'add' }).click()
+      await showFormAndAddBlog(page, 'Blog 1', 'Author 1', 'https://example.com')
       await expect(page.getByText('Added Blog 1', { exact: true })).toBeVisible()
       await expect(page.getByText('Blog 1 Author 1')).toBeVisible()
+    })
+    test('a blog can be liked', async ({ page }) => {
+      await showFormAndAddBlog(page, 'Blog 1', 'Author 1', 'https://example.com')
+      await page.locator('button', { hasText: 'show' }).click()
+      await page.locator('button', { hasText: 'like' }).click()
+      await expect(page.getByText('1 likes')).toBeVisible()
     })
   })
 })
