@@ -96,9 +96,11 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </p>
       <AddBlog addBlog={addBlog} />
-      {blogs.map(blog =>
-        <Blog key={blog.id} loggedinUser={user} blog={blog} incrementLike={incrementLike} removeBlog={removeBlog} />
-      )}
+      <div className="blogsContainer">
+        {blogs.map(blog =>
+          <Blog key={blog.id} loggedinUser={user} blog={blog} incrementLike={incrementLike} removeBlog={removeBlog} />
+        )}
+      </div>
     </div>
   )
 }

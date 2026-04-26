@@ -75,4 +75,25 @@ describe('Blog app', () => {
       })
     })
   })
+  describe('blogs are sorted by likes', () => {
+    beforeEach(async ({ page }) => {
+      // Login
+      await loginWith(page, 'user1', 'password1')
+      // Add blogs
+      await showFormAndAddBlog(page, 'Blog 1', 'Author 1', 'https://example.com')
+      await showFormAndAddBlog(page, 'Blog 2', 'Author 2', 'https://example.com')
+    })
+    test('blogs are sorted by likes', async ({ page }) => {
+      const blogs = page.locator('div.blog')
+  
+      const blog2 = await blogs.nth(1)
+      await blog2.getByRole('button', { name: 'show' }).click()
+      await blog2.getByRole('button', { name: 'like' }).click()
+
+      await page.waitForTimeout(1000)
+  
+      expect(blogs.nth(0).getByText('1 likes')).toBeVisible()
+      expect((await blogs.nth(0).innerText()).includes('Blog 2 Author 2'))
+    })
+  })
 })

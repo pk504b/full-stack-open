@@ -2,15 +2,15 @@ import { useState } from "react"
 
 const Blog = ({ loggedinUser, blog, incrementLike, removeBlog }) => {
   const [expanded, setExpanded] = useState(false)
-  console.log({loggedinUser, blog})
-  console.log(blog.user.username === loggedinUser.username)
 
   return (
-    <div style={{
-      border: "1px solid black",
-      padding: "4px",
-      margin: "4px 0"
-    }}>
+    <div
+      className="blog"
+      style={{
+        border: "1px solid black",
+        padding: "4px",
+        margin: "4px 0"
+      }}>
       <div>
         {blog.title} {blog.author}
         <button className="toggleBlog" onClick={() => setExpanded(!expanded)}>
