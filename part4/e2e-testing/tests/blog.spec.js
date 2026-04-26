@@ -44,11 +44,23 @@ describe('Blog app', () => {
       await expect(page.getByText('Added Blog 1', { exact: true })).toBeVisible()
       await expect(page.getByText('Blog 1 Author 1')).toBeVisible()
     })
-    test('a blog can be liked', async ({ page }) => {
-      await showFormAndAddBlog(page, 'Blog 1', 'Author 1', 'https://example.com')
-      await page.locator('button', { hasText: 'show' }).click()
-      await page.locator('button', { hasText: 'like' }).click()
-      await expect(page.getByText('1 likes')).toBeVisible()
+    describe('when added a blog', () => {
+      beforeEach(async ({ page }) => {
+        await showFormAndAddBlog(page, 'Blog 1', 'Author 1', 'https://example.com')
+      })
+      test('it can be liked', async ({ page }) => {
+        await page.locator('button', { hasText: 'show' }).click()
+        await page.locator('button', { hasText: 'like' }).click()
+        await expect(page.getByText('1 likes')).toBeVisible()
+      })
+      test('it can be removed', async ({ page }) => {
+        page.once('dialog', dialog => dialog.accept());
+
+        await page.locator('button', { hasText: 'show' }).click()
+        await page.locator('button', { hasText: 'remove' }).click()
+        // await expect(page.getByText('Removed Blog 1', { exact: true })).toBeVisible()
+        await expect(page.getByText('Blog 1 Author 1')).not.toBeVisible()
+      })
     })
   })
 })
