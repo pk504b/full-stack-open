@@ -1,7 +1,9 @@
 import { useState } from "react"
 
-const Blog = ({ blog, incrementLike, removeBlog }) => {
+const Blog = ({ loggedinUser, blog, incrementLike, removeBlog }) => {
   const [expanded, setExpanded] = useState(false)
+  console.log({loggedinUser, blog})
+  console.log(blog.user.username === loggedinUser.username)
 
   return (
     <div style={{
@@ -23,7 +25,7 @@ const Blog = ({ blog, incrementLike, removeBlog }) => {
           <br />
           {blog.user.name}
           <br />
-          <button onClick={() => removeBlog(blog.id)}>remove</button>
+          {blog.user.username === loggedinUser.username && <button onClick={() => removeBlog(blog.id)}>remove</button>}
         </div>
       )}
     </div>

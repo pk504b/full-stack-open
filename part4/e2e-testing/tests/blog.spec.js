@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'password1'
       }
     })
+    await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: 'User 2',
+        username: 'user2',
+        password: 'password2'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -58,8 +65,13 @@ describe('Blog app', () => {
 
         await page.locator('button', { hasText: 'show' }).click()
         await page.locator('button', { hasText: 'remove' }).click()
-        // await expect(page.getByText('Removed Blog 1', { exact: true })).toBeVisible()
         await expect(page.getByText('Blog 1 Author 1')).not.toBeVisible()
+      })
+      test('remove button is visible only to user who added the blog', async ({ page }) => {
+        await page.locator('button', { hasText: 'logout' }).click()
+        loginWith(page, 'user2', 'password2')
+        await page.locator('button', { hasText: 'show' }).click()
+        await expect(page.locator('button', { hasText: 'remove' })).not.toBeVisible()
       })
     })
   })
