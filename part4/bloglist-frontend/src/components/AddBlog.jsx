@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { TextField, Button } from "@mui/material"
+
 
 export default function AddBlog({ addBlog }) {
   const [title, setTitle] = useState("")
@@ -25,26 +27,30 @@ export default function AddBlog({ addBlog }) {
       <h2>add blog</h2>
 
       <form onSubmit={handleSubmit}>
-        <label>
-          title
-          <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          author
-          <input type="text" value={author} onChange={e => setAuthor(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          url
-          <input type="url" value={url} onChange={e => setUrl(e.target.value)} />
-        </label>
-        <br />
-        <button type="submit">add</button>
-        <button onClick={(e) => {
+        <TextField
+          label="title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+        />
+        <br /><br />
+        <TextField
+          label="author"
+          value={author}
+          onChange={e => setAuthor(e.target.value)}
+        />
+        <br /><br />
+        <TextField
+          label="url"
+          value={url}
+          onChange={e => setUrl(e.target.value)}
+        />
+        <br /><br />
+        <Button variant="contained" type="submit">add</Button>
+        {" "}
+        <Button variant="contained" onClick={(e) => {
           e.preventDefault()
           navigate("/")
-        }}>cancel</button>
+        }}>cancel</Button>
       </form>
       <br />
     </div>

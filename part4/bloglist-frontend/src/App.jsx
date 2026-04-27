@@ -4,6 +4,7 @@ import blogService from "./services/blogs"
 import loginService from "./services/login"
 import Login from "./components/Login"
 import AddBlog from "./components/AddBlog"
+import { Container } from "@mui/material"
 
 import {
   BrowserRouter as Router,
@@ -94,7 +95,7 @@ const App = () => {
   }, [])
 
   return (
-    <>
+    <Container>
       <div>
         <Link to="/">blogs</Link>
         {" "}
@@ -122,7 +123,7 @@ const App = () => {
           <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />
         } />
       </Routes>
-    </>
+    </Container>
   )
 }
 
