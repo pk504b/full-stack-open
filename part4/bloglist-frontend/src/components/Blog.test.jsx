@@ -1,54 +1,88 @@
 import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import Blog from "./Blog"
-import { test } from "vitest"
+import { expect, test, vi, beforeEach, describe } from "vitest"
+import { MemoryRouter, Routes, Route } from "react-router-dom"
 
-const testBlog = {
-  id: 1,
-  title: "test title",
-  author: "test author",
-  url: "https://testurl.com",
-  likes: 0,
-  user: {
-    id: 1,
-    username: "testusername",
-    name: "test user"
+const testBlogs = [
+  {
+    id: "1",
+    title: "test title",
+    author: "test author",
+    url: "https://testurl.com",
+    likes: 0,
+    user: {
+      id: "1",
+      username: "testusername",
+      name: "test user 1"
+    }
+  },
+  {
+    id: "2",
+    title: "test title 2",
+    author: "test author 2",
+    url: "https://testurl2.com",
+    likes: 0,
+    user: {
+      id: "2",
+      username: "testusername2",
+      name: "test user 2"
+    }
   }
-}
+]
 
 describe("Blog", () => {
-  test("should render title and author only", () => {
-    render(<Blog blog={testBlog} />)
-    expect(screen.getByText("test title", { exact: false })).toBeDefined()
-    expect(screen.getByText("test author", { exact: false })).toBeDefined()
-    expect(screen.queryByText("https://testurl.com", { exact: false })).toBeNull()
-    expect(screen.queryByText("0 likes", { exact: false })).toBeNull()
-    expect(screen.queryByText("test user", { exact: false })).toBeNull()
-  })
-  test("should render also url, likes, username when expanded", async () => {
-    render(<Blog blog={testBlog}  />)
+  let mockIncreaseLike
+  let mockRemoveBlog
 
-    const expandButton = screen.getByText("show")
-    await userEvent.click(expandButton)
-
-    expect(screen.getByText("test title", { exact: false })).toBeDefined()
-    expect(screen.getByText("test author", { exact: false })).toBeDefined()
-    expect(screen.getByText("https://testurl.com", { exact: false })).toBeDefined()
-    expect(screen.getByText("0 likes", { exact: false })).toBeDefined()
-    expect(screen.getByText("test user", { exact: false })).toBeDefined()
+  beforeEach(() => {
+    mockIncreaseLike = vi.fn()
+    mockRemoveBlog = vi.fn()
   })
-  test("clicking on like button should call incrementLike", async () => {
-    const mockHandler = vi.fn()
-    render(<Blog blog={testBlog} incrementLike={mockHandler} />)
-    // Expand blog
-    const expandButton = screen.getByText("show")
-    await userEvent.click(expandButton)
-    // Test liking
-    const user = userEvent.setup()
-    const likeButton = screen.getByText("like")
-    await user.click(likeButton)
-    await user.click(likeButton)
-    expect(mockHandler.mock.calls).toHaveLength(2)
+
+  const renderBlog = (user = null) => {
+    render(
+      <MemoryRouter initialEntries={["/blogs/1"]}>
+        <Routes>
+          <Route
+            path="/blogs/:id"
+            element={
+              <Blog
+                blogs={testBlogs}
+                loggedinUser={user}
+                increaseLike={mockIncreaseLike}
+                removeBlog={mockRemoveBlog}
+              />
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    )
+  }
+
+  test("unauthenticated users see blog info but no buttons", () => {
+    renderBlog(null)
+
+    expect(screen.getByText("test title", { exact: false })).toBeInTheDocument()
+    expect(screen.getByText("test author", { exact: false })).toBeInTheDocument()
+    expect(screen.getByText("https://testurl.com", { exact: false })).toBeInTheDocument()
+    expect(screen.getByText("0 likes", { exact: false })).toBeInTheDocument()
+    expect(screen.getByText("test user 1", { exact: false })).toBeInTheDocument()
+    expect(screen.queryAllByRole("button")).toHaveLength(0)
+  })
+
+  test("authenticated non-creators see only the like button", () => {
+    renderBlog(testBlogs[1].user)
+
+    expect(screen.getByRole("button", { name: "like" })).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: "remove" })).not.toBeInTheDocument()
+    expect(screen.queryAllByRole("button")).toHaveLength(1)
+  })
+
+  test("blog creators see both like and remove buttons", () => {
+    renderBlog(testBlogs[0].user)
+
+    expect(screen.getByRole("button", { name: "like" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "remove" })).toBeInTheDocument()
+    expect(screen.queryAllByRole("button")).toHaveLength(2)
   })
 })
-
