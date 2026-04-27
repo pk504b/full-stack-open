@@ -5,7 +5,15 @@ import loginService from "./services/login"
 import Login from "./components/Login"
 import AddBlog from "./components/AddBlog"
 
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link,
+  useNavigate
+} from "react-router-dom"
+import Bloglist from "./components/Bloglist"
+
 const App = () => {
+  const navigate = useNavigate()
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState("")
@@ -41,7 +49,7 @@ const App = () => {
     }
   }
 
-  const incrementLike = async (id, blog) => {
+  const increaseLike = async (id, blog) => {
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1
@@ -64,6 +72,7 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem("bloglist-user")
     setUser(null)
+    navigate("/")
   }
 
   useEffect(() => {
@@ -83,25 +92,27 @@ const App = () => {
     getBlogs()
   }, [])
 
-  if (!user) {
-    return <Login loginUser={loginUser} />
-  }
-
   return (
-    <div>
-      <h2>blogs</h2>
-      {notification && <div style={{ backgroundColor: "#1fda1f", padding: "10px" }}>{notification}</div>}
-      {error && <div style={{ backgroundColor: "#ff5555", padding: "10px" }}>{error}</div>}
-      <p>logged in as {user.username}
-        <button onClick={handleLogout}>logout</button>
-      </p>
-      <AddBlog addBlog={addBlog} />
-      <div className="blogsContainer">
-        {blogs.map(blog =>
-          <Blog key={blog.id} loggedinUser={user} blog={blog} incrementLike={incrementLike} removeBlog={removeBlog} />
-        )}
+    <>
+      <div>
+        <Link to="/">blogs</Link>
+        {" "}
+        {!user && <Link to="/login">login</Link>}
       </div>
-    </div>
+
+      <div>
+        {notification && <div style={{ backgroundColor: "#1fda1f", padding: "10px" }}>{notification}</div>}
+        {error && <div style={{ backgroundColor: "#ff5555", padding: "10px" }}>{error}</div>}
+        {user && <p>logged in as {user.username}
+          <button onClick={handleLogout}>logout</button>
+        </p>}
+      </div>
+
+      <Routes>
+        <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
+        <Route path="/login" element={<Login loginUser={loginUser} />} />
+      </Routes>
+    </>
   )
 }
 

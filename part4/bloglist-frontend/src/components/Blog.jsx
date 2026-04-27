@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ loggedinUser, blog, incrementLike, removeBlog }) => {
+const Blog = ({ loggedinUser, blog, increaseLike, removeBlog }) => {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -21,11 +21,11 @@ const Blog = ({ loggedinUser, blog, incrementLike, removeBlog }) => {
       {expanded && (
         <div>
           {blog.url} <br />
-          {blog.likes} likes <button onClick={() => incrementLike(blog.id, blog)}>like</button>
+          {blog.likes} likes <button onClick={() => increaseLike(blog.id, blog)}>like</button>
           <br />
           {blog.user.name}
           <br />
-          {blog.user.username === loggedinUser.username && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+          {loggedinUser && blog.user.username === loggedinUser.username && <button onClick={() => removeBlog(blog.id)}>remove</button>}
         </div>
       )}
     </div>
