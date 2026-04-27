@@ -4,7 +4,7 @@ import blogService from "./services/blogs"
 import loginService from "./services/login"
 import Login from "./components/Login"
 import AddBlog from "./components/AddBlog"
-import { Container } from "@mui/material"
+import { AppBar, Container, Toolbar, Button, Alert } from "@mui/material"
 
 import {
   BrowserRouter as Router,
@@ -17,8 +17,7 @@ const App = () => {
   const navigate = useNavigate()
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState("")
-  const [error, setError] = useState("")
+  const [notification, setNotification] = useState({ text: "", type: "info" })
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return
@@ -27,11 +26,11 @@ const App = () => {
       localStorage.setItem("bloglist-user", JSON.stringify(response))
       blogService.setToken(response.token)
       setUser(response)
-      setNotification(`Logged in as ${response.username}`)
+      setNotification({ text: `Logged in as ${response.username}`, type: "success" })
       setTimeout(() => setNotification(""), 2000)
     } catch (error) {
-      setError(error.response.data.error)
-      setTimeout(() => setError(""), 2000)
+      setNotification({ text: error.response.data.error, type: "error" })
+      setTimeout(() => setNotification(""), 2000)
       throw error
     }
   }
@@ -41,11 +40,11 @@ const App = () => {
     try {
       const savedBlog = await blogService.add({ title, author, url })
       setBlogs(blogs => [...blogs, { ...savedBlog, user }])
-      setNotification(`Added ${savedBlog.title}`)
+      setNotification({ text: `Added ${savedBlog.title}`, type: "success" })
       setTimeout(() => setNotification(""), 2000)
     } catch (error) {
-      setError(error.response.data.error)
-      setTimeout(() => setError(""), 2000)
+      setNotification({ text: error.response.data.error, type: "error" })
+      setTimeout(() => setNotification(""), 2000)
       throw error
     }
   }
@@ -96,23 +95,20 @@ const App = () => {
 
   return (
     <Container>
-      <div>
-        <Link to="/">blogs</Link>
-        {" "}
-        {!user && <Link to="/login">login</Link>}
-        {" "}
-        {user && <Link to="/add">new blog</Link>}
-      </div>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit"><Link to="/">blogs</Link></Button>
+          {!user && <Button color="inherit"><Link to="/login">login</Link></Button>}
+          {user && <Button color="inherit"><Link to="/add">new blog</Link></Button>}
+          {user && <p>logged in as {user.username}
+            <Button color="inherit" onClick={handleLogout}>logout</Button>
+          </p>}
+        </Toolbar>
+      </AppBar>
 
-      <div>
-        {notification && <div style={{ backgroundColor: "#1fda1f", padding: "10px" }}>{notification}</div>}
-        {error && <div style={{ backgroundColor: "#ff5555", padding: "10px" }}>{error}</div>}
-        {user && <p>logged in as {user.username}
-          <button onClick={handleLogout}>logout</button>
-        </p>}
-      </div>
-
-      <hr />
+      {notification.text && <Alert style={{ marginTop: 10, marginBottom: 10 }} severity={notification.type}>
+        {notification.text}
+      </Alert>}
 
       <Routes>
         <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
