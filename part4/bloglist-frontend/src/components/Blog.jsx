@@ -1,33 +1,23 @@
-import { useState } from "react"
+import { useParams } from "react-router-dom"
 
-const Blog = ({ loggedinUser, blog, increaseLike, removeBlog }) => {
-  const [expanded, setExpanded] = useState(false)
+const Blog = ({ loggedinUser, blogs, increaseLike, removeBlog }) => {
+  const id = useParams().id
+  const blog = blogs.find(blog => blog.id === id)
 
   return (
-    <div
-      className="blog"
-      style={{
-        border: "1px solid black",
-        padding: "4px",
-        margin: "4px 0"
-      }}>
-      <div>
-        {blog.title} {blog.author}
-        <button className="toggleBlog" onClick={() => setExpanded(!expanded)}>
-          {expanded ? "hide" : "show"}
-        </button>
-      </div>
+    <div className="blog">
+      <h3>
+        {blog.title} by {blog.author}
+      </h3>
 
-      {expanded && (
-        <div>
-          {blog.url} <br />
-          {blog.likes} likes <button onClick={() => increaseLike(blog.id, blog)}>like</button>
-          <br />
-          {blog.user.name}
-          <br />
-          {loggedinUser && blog.user.username === loggedinUser.username && <button onClick={() => removeBlog(blog.id)}>remove</button>}
-        </div>
-      )}
+      <div>
+        {blog.url} <br />
+        {blog.likes} likes {loggedinUser && <button onClick={() => increaseLike(blog.id, blog)}>like</button>}
+        <br />
+        {blog.user.name}
+        <br />
+        {loggedinUser && blog.user.username === loggedinUser.username && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+      </div>
     </div>
   )
 }

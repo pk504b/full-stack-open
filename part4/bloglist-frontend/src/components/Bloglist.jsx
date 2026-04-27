@@ -1,14 +1,17 @@
+import { Link } from "react-router-dom"
 import Blog from "./Blog"
 
-export default function Bloglist({ blogs, loggedinUser, increaseLike, removeBlog }) {
+export default function Bloglist({ blogs }) {
   return (
     <>
       <h2>blogs</h2>
-      <div className="blogsContainer">
+      <ul>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} loggedinUser={loggedinUser} increaseLike={increaseLike} removeBlog={removeBlog} />
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
+          </li>
         )}
-      </div>
+      </ul>
     </>
   )
 }

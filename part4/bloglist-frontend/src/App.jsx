@@ -55,7 +55,7 @@ const App = () => {
       likes: blog.likes + 1
     }
     const returnedBlog = await blogService.incrementLike(blog.id, updatedBlog)
-    const updatedBlogs = blogs.map(blog => blog.id === id ? returnedBlog : blog).sort((a, b) => b.likes - a.likes)
+    const updatedBlogs = blogs.map(blog => blog.id === id ? { ...returnedBlog, user } : blog).sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
   }
 
@@ -108,9 +108,15 @@ const App = () => {
         </p>}
       </div>
 
+      <hr />
+
       <Routes>
         <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
         <Route path="/login" element={<Login loginUser={loginUser} />} />
+
+        <Route path="/blogs/:id" element={
+          <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />
+        } />
       </Routes>
     </>
   )
