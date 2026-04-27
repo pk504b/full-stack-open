@@ -5,9 +5,7 @@ const loginWith = async (page, username, password) => {
   await loginForm.locator('button', { hasText: 'Login' }).click()
 }
 
-const showFormAndAddBlog = async (page, title, author, url) => {
-  const formToggleBtn = page.locator('button', { hasText: 'add new blog' })
-  await formToggleBtn.click()
+const fillFormAndAddBlog = async (page, title, author, url) => {
   const addBlogForm = page.locator('form')
   await addBlogForm.getByLabel('title').fill(title)
   await addBlogForm.getByLabel('author').fill(author)
@@ -15,4 +13,4 @@ const showFormAndAddBlog = async (page, title, author, url) => {
   await addBlogForm.locator('button', { hasText: 'add' }).click()
 }
 
-export { loginWith, showFormAndAddBlog }
+export { loginWith, fillFormAndAddBlog }
