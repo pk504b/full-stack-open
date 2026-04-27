@@ -4,6 +4,8 @@ const Blog = ({ loggedinUser, blogs, increaseLike, removeBlog }) => {
   const id = useParams().id
   const blog = blogs.find(blog => blog.id === id)
 
+  if (!blog) return <div>blog not found</div>
+
   return (
     <div className="blog">
       <h3>

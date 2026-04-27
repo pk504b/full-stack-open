@@ -67,6 +67,7 @@ const App = () => {
     await blogService.removeBlog(id)
     const updatedBlogs = blogs.filter(blog => blog.id !== id).sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
+    navigate("/")
   }
 
   const handleLogout = () => {
@@ -98,6 +99,8 @@ const App = () => {
         <Link to="/">blogs</Link>
         {" "}
         {!user && <Link to="/login">login</Link>}
+        {" "}
+        {user && <Link to="/add">new blog</Link>}
       </div>
 
       <div>
@@ -113,6 +116,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
         <Route path="/login" element={<Login loginUser={loginUser} />} />
+        <Route path="/add" element={<AddBlog addBlog={addBlog} />} />
 
         <Route path="/blogs/:id" element={
           <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />

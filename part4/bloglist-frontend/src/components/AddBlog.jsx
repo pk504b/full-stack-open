@@ -1,10 +1,11 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function AddBlog({ addBlog }) {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
-  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -13,13 +14,11 @@ export default function AddBlog({ addBlog }) {
       setTitle("")
       setAuthor("")
       setUrl("")
-      setShowForm(false)
+      navigate("/")
     } catch (error) {
       console.log(error)
     }
   }
-
-  if (!showForm) return <button onClick={() => setShowForm(true)}>add new blog</button>
 
   return (
     <div>
@@ -44,7 +43,7 @@ export default function AddBlog({ addBlog }) {
         <button type="submit">add</button>
         <button onClick={(e) => {
           e.preventDefault()
-          setShowForm(false)
+          navigate("/")
         }}>cancel</button>
       </form>
       <br />
