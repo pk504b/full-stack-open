@@ -5,11 +5,12 @@ import { afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
 vi.mock('./services/anecdotes', () => ({
-  getAnecdotes: vi.fn() 
+  getAnecdotes: vi.fn(),
+  updateAnecdote: vi.fn()
 }))
 
 import useAnecdoteStore, { useAnecdoteActions, useAnecdotes } from './store'
-import { getAnecdotes } from './services/anecdotes'
+import { getAnecdotes, updateAnecdote } from './services/anecdotes'
 
 beforeEach(() => {
   useAnecdoteStore.setState({ anecdotes: [], filter: '' })
@@ -75,6 +76,29 @@ describe('useAnecdoteActions', () => {
     expect(anecdotes.current).toEqual([
       { id: 2, content: 'ten votes', votes: 10 },
       { id: 3, content: 'five votes', votes: 5 }
+    ])
+  })
+  it('voting an anecdote increments its votes', async () => {
+    const mockAnecdotes = [
+      { id: 918, content: 'test anecdote', votes: 1 },
+    ]
+    getAnecdotes.mockResolvedValue(mockAnecdotes)
+    updateAnecdote.mockImplementation((id, updatedData) => Promise.resolve(updatedData))
+
+    const { result: actions } = renderHook(() => useAnecdoteActions())
+    
+    await act(async () => {
+      await actions.current.initialize()
+    })
+
+    await act(async () => {
+      await actions.current.vote(918)
+    })
+
+    const { result: anecdotes } = renderHook(() => useAnecdotes())
+
+    expect(anecdotes.current).toEqual([
+      { id: 918, content: 'test anecdote', votes: 2 }
     ])
   })
 })
