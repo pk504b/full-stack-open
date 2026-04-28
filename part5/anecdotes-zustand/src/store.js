@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getAnecdotes, addAnecdote, updateAnecdote, deleteAnecdote } from './anecdoteServices'
+import { getAnecdotes, addAnecdote, updateAnecdote, deleteAnecdote } from './services/anecdotes'
 
 const asObject = anecdote => ({
   content: anecdote,
@@ -53,7 +53,9 @@ export const useAnecdotes = () => {
 }
 export const useFilter = () => useAnecdoteStore((state) => state.filter)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
+export default useAnecdoteStore
 
+// NOTIFICATION
 
 const useNotificationStore = create((set) => ({
   message: '',

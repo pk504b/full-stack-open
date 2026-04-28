@@ -34,6 +34,11 @@
       "content": "life sucks",
       "id": "dK4v66o1l6E",
       "votes": 6
+    },
+    {
+      "content": "gotta do something",
+      "votes": 1,
+      "id": "5Ckpl5xt-h8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
