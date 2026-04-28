@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getAnecdotes } from './anecdoteServices'
+import { getAnecdotes, addAnecdote } from './anecdoteServices'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
@@ -32,13 +32,15 @@ const useAnecdoteStore = create((set) => ({
         ].toSorted((a, b) => b.votes - a.votes)
       }))
     },
-    add: (anecdote) => {
+    add: async (anecdote) => {
+      const newAnecdote = await addAnecdote(asObject(anecdote));
       set((state) => ({
         anecdotes: [
           ...state.anecdotes,
-          asObject(anecdote)
+          newAnecdote
         ]
       }))
+      return newAnecdote;
     },
     setFilter: (filter) => {
       set({ filter })
