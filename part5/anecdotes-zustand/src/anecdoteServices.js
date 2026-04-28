@@ -36,15 +36,12 @@ export const updateAnecdote = async (id, anecdote) => {
   return res.json();
 };
 
-// export const voteAnecdote = async (id) => {
-//   const res = await fetch(`${baseUrl}/${id}`, {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   });
-//   if (!res.ok) {
-//     throw new Error("Failed to vote anecdote");
-//   }
-//   return res.json();
-// };
+export const deleteAnecdote = async (id) => {
+  const res = await fetch(`${baseUrl}/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to delete anecdote");
+  }
+  return res.json();
+};
