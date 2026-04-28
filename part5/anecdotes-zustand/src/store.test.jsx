@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
+import { afterEach } from 'vitest'
+import { cleanup } from '@testing-library/react'
 
 vi.mock('./services/anecdotes', () => ({
   getAnecdotes: vi.fn() 
@@ -34,4 +37,31 @@ describe('useAnecdoteActions', () => {
     })
     expect(useAnecdoteStore.getState().anecdotes).toEqual(mockAnecdotes)
   })
+})
+
+import AnecdoteList from './components/AnecdoteList'
+
+describe('AnecdoteList Sorting', () => {
+  beforeEach(() => {
+    useAnecdoteStore.setState({
+      anecdotes: [
+        { id: 1, content: 'Low votes', votes: 1 },
+        { id: 2, content: 'High votes', votes: 10 },
+        { id: 3, content: 'Medium votes', votes: 5 }
+      ]
+    })
+  })
+
+  it.only('renders anecdotes sorted by votes descending', () => {
+    render(<AnecdoteList />)
+    const anecdoteElements = screen.getAllByTestId('anecdote-item')
+
+    expect(anecdoteElements[0]).toHaveTextContent('High votes')
+    expect(anecdoteElements[1]).toHaveTextContent('Medium votes')
+    expect(anecdoteElements[2]).toHaveTextContent('Low votes')
+  })
+})
+
+afterEach(() => {
+  cleanup()
 })

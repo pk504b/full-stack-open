@@ -11,7 +11,7 @@ export default function Anecdote({ anecdote }) {
     setTimeout(() => clearMessage(), 2000)
   }
   return (
-    <div>
+    <div data-testid="anecdote-item">
       <div>{anecdote.content}</div>
       <div>
         has {anecdote.votes}

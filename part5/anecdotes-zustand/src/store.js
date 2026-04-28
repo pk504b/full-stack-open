@@ -49,7 +49,7 @@ export const useAnecdotes = () => {
   if (filter) {
     return anecdotes.filter(anecdote => anecdote.content.includes(filter))
   }
-  return anecdotes
+  return anecdotes.sort((a, b) => b.votes - a.votes)
 }
 export const useFilter = () => useAnecdoteStore((state) => state.filter)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
