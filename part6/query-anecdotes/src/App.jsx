@@ -1,28 +1,18 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useAnecdotes } from './hooks/useAnecdotes'
-import NotificationContext from './NotificationContext'
-import { useState } from 'react'
+import { useNotification } from './hooks/useNotification'
 
 const App = () => {
   const { anecdotes, isPending, isError, voteAnecdote } = useAnecdotes()
-  const [notification, setNotification] = useState({
-    message: '',
-    type: ''
-  })
+  const { handleNotification } = useNotification()
 
   function hanldeVote(anecdote) {
     voteAnecdote(anecdote)
-    setNotification({
+    handleNotification({
       message: `voted: ${anecdote.content}`,
       type: 'success'
     })
-    setTimeout(() => {
-      setNotification({
-        message: '',
-        type: ''
-      })
-    }, 5000)
   }
 
   if (isPending) {
@@ -34,7 +24,7 @@ const App = () => {
   }
 
   return (
-    <NotificationContext.Provider value={{notification, setNotification}}>
+    <div>
       <h3>Anecdote app</h3>
 
       <Notification />
@@ -49,7 +39,7 @@ const App = () => {
           </div>
         </div>
       ))}
-    </NotificationContext.Provider>
+    </div>
   )
 }
 

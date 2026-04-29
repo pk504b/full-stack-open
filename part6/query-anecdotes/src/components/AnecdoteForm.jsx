@@ -1,10 +1,9 @@
 import { useAnecdotes } from '../hooks/useAnecdotes'
-import { useContext } from 'react'
-import NotificationContext from '../NotificationContext'
+import { useNotification } from '../hooks/useNotification'
 
 const AnecdoteForm = () => {
   const { addAnecdote } = useAnecdotes()
-  const { setNotification } = useContext(NotificationContext)
+  const { handleNotification } = useNotification()
 
   const onCreate = async (event) => {
     event.preventDefault()
@@ -12,27 +11,15 @@ const AnecdoteForm = () => {
       const content = event.target.anecdote.value
       await addAnecdote({ content, votes: 0 })
       event.target.reset()
-      setNotification({
-        message: `added: ${content}`,
+      handleNotification({ 
+        message: `created: ${content}`,
         type: 'success'
       })
-      setTimeout(() => {
-        setNotification({
-          message: '',
-          type: ''
-        })
-      }, 5000)
     } catch (error) {
-      setNotification({
-        message: `Error: ${error.message}`,
+      handleNotification({ 
+        message: error.message,
         type: 'error'
       })
-      setTimeout(() => {
-        setNotification({
-          message: '',
-          type: ''
-        })
-      }, 5000)
     }
   }
 
