@@ -11,10 +11,15 @@ const App = () => {
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
+    retry: false,
   })
- 
+
   if (result.isPending) {
     return <div>loading data...</div>
+  }
+
+  if (result.isError) {
+    return <p>anecdote service not available due to problems in server</p>
   }
  
   const anecdotes = result.data
