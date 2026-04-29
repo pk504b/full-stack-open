@@ -21,3 +21,17 @@ export const createAnecdote = async (anecdote) => {
   }
   return res.json()
 }
+
+export const updateAnecdote = async (anecdote) => {
+  const res = await fetch(`${baseUrl}/${anecdote.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(anecdote),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!res.ok) {
+    throw new Error('Failed to vote anecdote')
+  }
+  return res.json()
+}
