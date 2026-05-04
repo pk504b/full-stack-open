@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import anecdoteService from '../services/anecdotes'
 
 export const useField = (type) => {
   const [value, setValue] = useState('')
@@ -21,22 +22,25 @@ export const useField = (type) => {
   }
 }
 
-const baseUrl = 'http://localhost:3001/anecdotes'
 
 export const useAnecdotes = () => {
   const [anecdotes, setAnecdotes] = useState([])
 
   useEffect(() => {
     const getAnecdotes = async() => {
-      const response = await fetch(baseUrl)
-      const data = await response.json()
+      const data = await anecdoteService.getAll()
       setAnecdotes(data)
     }
     getAnecdotes()
   }, [])
 
+  const addAnecdote = async (anecdote) => {
+    const data = await anecdoteService.createNew(anecdote)
+    setAnecdotes(prevAnecdotes => [...prevAnecdotes, data])
+  }
   
   return {
     anecdotes,
+    addAnecdote
   }
 }

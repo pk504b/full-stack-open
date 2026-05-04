@@ -9,7 +9,12 @@ const CreateNew = ({ addAnecdote }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    addAnecdote({ content: content.value, author: author.value, info: info.value, votes: 0 })
+    addAnecdote({ 
+      content: content.inputProps.value, 
+      author: author.inputProps.value, 
+      info: info.inputProps.value,
+      votes: 0
+    })
     navigate('/')
   }
 
