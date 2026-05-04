@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export const useField = (type) => {
   const [value, setValue] = useState('')
@@ -21,8 +21,22 @@ export const useField = (type) => {
   }
 }
 
-// modules can have several named exports
+const baseUrl = 'http://localhost:3001/anecdotes'
 
-export const useAnotherHook = () => {
-  // ...
+export const useAnecdotes = () => {
+  const [anecdotes, setAnecdotes] = useState([])
+
+  useEffect(() => {
+    const getAnecdotes = async() => {
+      const response = await fetch(baseUrl)
+      const data = await response.json()
+      setAnecdotes(data)
+    }
+    getAnecdotes()
+  }, [])
+
+  
+  return {
+    anecdotes,
+  }
 }
