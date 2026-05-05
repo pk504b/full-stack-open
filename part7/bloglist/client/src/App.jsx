@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 import Login from "./components/Login";
 import AddBlog from "./components/AddBlog";
 import { AppBar, Container, Toolbar, Button, Alert } from "@mui/material";
@@ -16,28 +15,30 @@ import {
 import Bloglist from "./components/Bloglist";
 import { useNotification } from "./stores/notification";
 import { useBlog } from "./stores/blog";
+import { useUser } from "./stores/user";
 
 const App = () => {
   const navigate = useNavigate();
-  // const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
   const {
     text: notificationText,
     type: notificationType,
     setNotification,
     clearNotification,
   } = useNotification();
-  const { blogs, initialize, add, like, remove } = useBlog();
+  const { blogs, initialize: initializeBlogs, add, like, remove } = useBlog();
+  const { user, initialize: initializeUser, login, logout } = useUser();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
     try {
-      const response = await loginService.login({ username, password });
-      localStorage.setItem("bloglist-user", JSON.stringify(response));
-      blogService.setToken(response.token);
-      setUser(response);
+      // const response = await loginService.login({ username, password });
+      await login({ username, password });
+      const user = useUser.getState().user;
+      localStorage.setItem("bloglist-user", JSON.stringify(user));
+      blogService.setToken(user.token);
+      // setUser(response);
       setNotification({
-        text: `Logged in as ${response.username}`,
+        text: `Logged in as ${user.username}`,
         type: "success"
       });
       setTimeout(() => clearNotification(), 2000);
@@ -77,22 +78,16 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("bloglist-user");
-    setUser(null);
+    logout();
     navigate("/");
   };
 
   useEffect(() => {
     // Get user from localStorage
-    const loggedUserJSON = window.localStorage.getItem("bloglist-user");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
+    initializeUser();
     // Get blogs on mount
-    initialize();
-  }, [initialize]);
+    initializeBlogs();
+  }, [initializeBlogs, initializeUser]);
 
   return (
     <Container>
