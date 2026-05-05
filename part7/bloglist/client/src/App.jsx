@@ -120,6 +120,9 @@ const App = () => {
           <Route path="/blogs/:id" element={
             <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />
           } />
+
+          {/* This is a catch all route that will render if no other route matches*/}
+          <Route path="*" element={<h2>404 - Page not found</h2>} />
         </Routes>
       </ErrorBoundary>
     </Container>
