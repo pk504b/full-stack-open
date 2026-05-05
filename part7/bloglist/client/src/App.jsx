@@ -6,7 +6,6 @@ import Login from "./components/Login";
 import AddBlog from "./components/AddBlog";
 import { AppBar, Container, Toolbar, Button, Alert } from "@mui/material";
 import ErrorBoundary from "./components/ErrorBoundry";
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,12 +14,18 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
+import { useNotification } from "./stores/notification";
 
 const App = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({ text: "", type: "info" });
+  const {
+    text: notificationText,
+    type: notificationType,
+    setNotification,
+    clearNotification,
+  } = useNotification();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
@@ -31,12 +36,12 @@ const App = () => {
       setUser(response);
       setNotification({
         text: `Logged in as ${response.username}`,
-        type: "success",
+        type: "success"
       });
-      setTimeout(() => setNotification(""), 2000);
+      setTimeout(() => clearNotification(), 2000);
     } catch (error) {
       setNotification({ text: error.response.data.error, type: "error" });
-      setTimeout(() => setNotification(""), 2000);
+      setTimeout(() => clearNotification(), 2000);
       throw error;
     }
   };
@@ -133,12 +138,12 @@ const App = () => {
         </Toolbar>
       </AppBar>
 
-      {notification.text && (
+      {notificationText && (
         <Alert
           style={{ marginTop: 10, marginBottom: 10 }}
-          severity={notification.type}
+          severity={notificationType}
         >
-          {notification.text}
+          {notificationText}
         </Alert>
       )}
 
