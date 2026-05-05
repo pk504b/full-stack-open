@@ -5,6 +5,7 @@ import loginService from "./services/login"
 import Login from "./components/Login"
 import AddBlog from "./components/AddBlog"
 import { AppBar, Container, Toolbar, Button, Alert } from "@mui/material"
+import ErrorBoundary from "./components/ErrorBoundry"
 
 import {
   BrowserRouter as Router,
@@ -110,15 +111,17 @@ const App = () => {
         {notification.text}
       </Alert>}
 
-      <Routes>
-        <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
-        <Route path="/login" element={<Login loginUser={loginUser} />} />
-        <Route path="/add" element={<AddBlog addBlog={addBlog} />} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Bloglist blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />} />
+          <Route path="/login" element={<Login loginUser={loginUser} />} />
+          <Route path="/add" element={<AddBlog addBlog={addBlog} />} />
 
-        <Route path="/blogs/:id" element={
-          <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />
-        } />
-      </Routes>
+          <Route path="/blogs/:id" element={
+            <Blog path="/blogs/:id" blogs={blogs} loggedinUser={user} increaseLike={increaseLike} removeBlog={removeBlog} />
+          } />
+        </Routes>
+      </ErrorBoundary>
     </Container>
   )
 }

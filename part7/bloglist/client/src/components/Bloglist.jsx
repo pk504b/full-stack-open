@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import Blog from "./Blog"
 
 export default function Bloglist({ blogs }) {
+  // throw new Error('simulated error')
   return (
     <>
       <h2>blogs</h2>
