@@ -27,7 +27,7 @@ const App = () => {
     setNotification,
     clearNotification,
   } = useNotification();
-  const { blogs, initialize, add } = useBlog();
+  const { blogs, initialize, add, like, remove } = useBlog();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
@@ -61,16 +61,8 @@ const App = () => {
     }
   };
 
-  const increaseLike = async (id, blog) => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-    const returnedBlog = await blogService.incrementLike(blog.id, updatedBlog);
-    const updatedBlogs = blogs
-      .map((blog) => (blog.id === id ? { ...returnedBlog, user } : blog))
-      .sort((a, b) => b.likes - a.likes);
-    setBlogs(updatedBlogs);
+  const increaseLike = async (id) => {
+    await like(id, user);
   };
 
   const removeBlog = async (id) => {
@@ -80,11 +72,7 @@ const App = () => {
     );
     if (!confirmation) return;
 
-    await blogService.removeBlog(id);
-    const updatedBlogs = blogs
-      .filter((blog) => blog.id !== id)
-      .sort((a, b) => b.likes - a.likes);
-    setBlogs(updatedBlogs);
+    await remove(id);
     navigate("/");
   };
 
@@ -145,17 +133,7 @@ const App = () => {
 
       <ErrorBoundary>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Bloglist
-                blogs={blogs}
-                loggedinUser={user}
-                increaseLike={increaseLike}
-                removeBlog={removeBlog}
-              />
-            }
-          />
+          <Route path="/" element={<Bloglist blogs={blogs} />} />
           <Route path="/login" element={<Login loginUser={loginUser} />} />
           <Route path="/add" element={<AddBlog addBlog={addBlog} />} />
 
