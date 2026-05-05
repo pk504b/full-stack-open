@@ -1,6 +1,6 @@
-const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+const Blog = require("../models/blog");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 const initialUsers = [
   {
@@ -13,21 +13,24 @@ const initialUsers = [
     name: "User 2",
     password: "password2",
   },
-]
+];
 
 const usersInDB = async () => {
-  const users = await User.find({})
-  return users
-}
+  const users = await User.find({});
+  return users;
+};
 
 const createToken = async (user) => {
-  const token = jwt.sign({ 
-    id: user.id,
-    username: user.username,
-  }, process.env.JWT_SECRET)
+  const token = jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+    },
+    process.env.JWT_SECRET,
+  );
 
-  return token
-}
+  return token;
+};
 
 const initialBlogs = [
   {
@@ -60,12 +63,12 @@ const initialBlogs = [
     url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
     likes: 0,
   },
-]
+];
 
 const blogsInDB = async () => {
-  const blogs = await Blog.find({})
-  return blogs
-}
+  const blogs = await Blog.find({});
+  return blogs;
+};
 
 module.exports = {
   initialUsers,
@@ -73,4 +76,4 @@ module.exports = {
   initialBlogs,
   blogsInDB,
   createToken,
-}
+};
