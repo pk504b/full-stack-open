@@ -15,10 +15,11 @@ import {
 } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
 import { useNotification } from "./stores/notification";
+import { useBlog } from "./stores/blog";
 
 const App = () => {
   const navigate = useNavigate();
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const {
     text: notificationText,
@@ -26,6 +27,7 @@ const App = () => {
     setNotification,
     clearNotification,
   } = useNotification();
+  const { blogs, initialize, add } = useBlog();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
@@ -49,9 +51,8 @@ const App = () => {
   const addBlog = async ({ title, author, url }) => {
     if (!user) return;
     try {
-      const savedBlog = await blogService.add({ title, author, url });
-      setBlogs((blogs) => [...blogs, { ...savedBlog, user }]);
-      setNotification({ text: `Added ${savedBlog.title}`, type: "success" });
+      await add({ title, author, url });
+      setNotification({ text: `Added ${title}`, type: "success" });
       setTimeout(() => setNotification(""), 2000);
     } catch (error) {
       setNotification({ text: error.response.data.error, type: "error" });
@@ -101,14 +102,9 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     }
-    // Get blogs
-    async function getBlogs() {
-      const blogs = await blogService.getAll();
-      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    }
-    getBlogs();
-  }, []);
+    // Get blogs on mount
+    initialize();
+  }, [initialize]);
 
   return (
     <Container>
