@@ -8,7 +8,6 @@ export default function User() {
   if (isLoading) return <p>loading...</p>;
 
   const user = users.find((user) => user.id === id);
-  console.log(user);
   return (
     <div>
       <h1>{user.name}</h1>

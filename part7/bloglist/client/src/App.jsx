@@ -93,6 +93,9 @@ const App = () => {
           <Button color="inherit">
             <Link to="/">blogs</Link>
           </Button>
+          <Button color="inherit">
+            <Link to="/users">users</Link>
+          </Button>
           {!user && (
             <Button color="inherit">
               <Link to="/login">login</Link>

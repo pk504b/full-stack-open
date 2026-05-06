@@ -73,8 +73,8 @@ const Blog = ({ loggedinUser, blogs, increaseLike, removeBlog }) => {
         <br />
         <h3>comments</h3>
         <form onSubmit={addComment}>
-          <TextField {...comment} />
-          <Button variant="contained" type="submit">
+          <TextField size="small" {...comment} />
+          <Button variant="contained" size="large" type="submit">
             add comment
           </Button>
         </form>
