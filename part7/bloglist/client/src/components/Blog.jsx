@@ -4,12 +4,39 @@ import {
   CardContent,
   CardHeader,
   Typography,
+  TextField,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import commentService from "../services/comments";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useField } from "../hooks/field";
 
 const Blog = ({ loggedinUser, blogs, increaseLike, removeBlog }) => {
   const id = useParams().id;
   const blog = blogs.find((blog) => blog.id === id);
+  const comment = useField("comment");
+
+  const [comments, setComments] = useState([]);
+  const addComment = async (e) => {
+    e.preventDefault();
+    try {
+      await commentService.addComment(blog.id, comment.value);
+      setComments([...comments, { content: comment.value }]);
+      comment.value = "";
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const getComments = async () => {
+      const comments = await commentService.getBlogComments(blog.id);
+      setComments(comments);
+    };
+
+    getComments();
+  }, [blog.id]);
 
   if (!blog) return <div>blog not found</div>;
 
@@ -43,6 +70,19 @@ const Blog = ({ loggedinUser, blogs, increaseLike, removeBlog }) => {
             </Button>
           )}
         </Typography>
+        <br />
+        <h3>comments</h3>
+        <form onSubmit={addComment}>
+          <TextField {...comment} />
+          <Button variant="contained" type="submit">
+            add comment
+          </Button>
+        </form>
+        <ul>
+          {comments.map((comment) => (
+            <li key={comment.id}>{comment.content}</li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   );

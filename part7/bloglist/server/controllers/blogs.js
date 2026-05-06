@@ -2,6 +2,7 @@ const blogsRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 const middleware = require("../utils/middleware");
 
 blogsRouter.get("/", async (request, response) => {
@@ -67,6 +68,33 @@ blogsRouter.put("/:id", async (request, response) => {
 
   const savedBlog = await blogToUpdate.save();
   response.status(200).json(savedBlog);
+});
+
+// Comments
+blogsRouter.get("/:id/comments", async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+  if (!blog)
+    return response.status(404).json({ error: "blog not found" });
+
+  const comments = await Comment.find({ blog: blog.id });
+  response.json(comments);
+});
+
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const { content } = request.body;
+  if (!content)
+    return response.status(400).json({ error: "content is required" });
+
+  const blog = await Blog.findById(request.params.id);
+  if (!blog)
+    return response.status(404).json({ error: "blog not found" });
+
+  const comment = new Comment({
+    content,
+    blog: blog.id,
+  });
+  const savedComment = await comment.save();
+  response.status(201).json(savedComment);
 });
 
 module.exports = blogsRouter;
