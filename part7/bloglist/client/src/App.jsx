@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
 import Login from "./components/Login";
 import AddBlog from "./components/AddBlog";
 import { AppBar, Container, Toolbar, Button, Alert } from "@mui/material";
@@ -14,9 +13,10 @@ import {
 } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
 import { useNotification } from "./stores/notification";
-// import { useUser } from "./stores/user";
 import { useBlogs } from "./hooks/blogs";
 import { useUser } from "./UserContext";
+import UserList from "./components/UserList";
+import User from "./components/User";
 
 const App = () => {
   const navigate = useNavigate();
@@ -141,6 +141,9 @@ const App = () => {
               />
             }
           />
+
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User />} />
 
           {/* Catch all route */}
           <Route path="*" element={<h2>404 - Page not found</h2>} />
