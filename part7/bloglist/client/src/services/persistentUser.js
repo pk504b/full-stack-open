@@ -1,4 +1,4 @@
-const getUser = () => { 
+const getUser = () => {
   return window.localStorage.getItem("bloglist-user")
 }
 const saveUser = (user) => {
