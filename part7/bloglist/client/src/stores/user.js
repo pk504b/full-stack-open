@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import loginService from "../services/login";
+import blogService from "../services/blogs";
 
 export const useUser = create((set) => ({
   user: null,
@@ -8,6 +9,7 @@ export const useUser = create((set) => ({
     const loggedUserJSON = window.localStorage.getItem("bloglist-user");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
+      blogService.setToken(user.token);
       set(() => ({ user }));
     }
   },

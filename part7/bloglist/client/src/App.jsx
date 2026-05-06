@@ -14,8 +14,8 @@ import {
 } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
 import { useNotification } from "./stores/notification";
-import { useBlog } from "./stores/blog";
 import { useUser } from "./stores/user";
+import { useBlogs } from "./hooks/blogs";
 
 const App = () => {
   const navigate = useNavigate();
@@ -25,18 +25,16 @@ const App = () => {
     setNotification,
     clearNotification,
   } = useNotification();
-  const { blogs, initialize: initializeBlogs, add, like, remove } = useBlog();
   const { user, initialize: initializeUser, login, logout } = useUser();
+  const { blogs, isLoading, add, like, remove } = useBlogs();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
     try {
-      // const response = await loginService.login({ username, password });
       await login({ username, password });
       const user = useUser.getState().user;
       localStorage.setItem("bloglist-user", JSON.stringify(user));
       blogService.setToken(user.token);
-      // setUser(response);
       setNotification({
         text: `Logged in as ${user.username}`,
         type: "success"
@@ -52,10 +50,11 @@ const App = () => {
   const addBlog = async ({ title, author, url }) => {
     if (!user) return;
     try {
-      await add({ title, author, url });
+      add.mutate({ title, author, url });
       setNotification({ text: `Added ${title}`, type: "success" });
       setTimeout(() => setNotification(""), 2000);
     } catch (error) {
+      console.log(error);
       setNotification({ text: error.response.data.error, type: "error" });
       setTimeout(() => setNotification(""), 2000);
       throw error;
@@ -63,7 +62,8 @@ const App = () => {
   };
 
   const increaseLike = async (id) => {
-    await like(id, user);
+    const blog = blogs.find((blog) => blog.id === id);
+    like.mutate({ id, blog: { ...blog, likes: blog.likes + 1 } });
   };
 
   const removeBlog = async (id) => {
@@ -73,7 +73,7 @@ const App = () => {
     );
     if (!confirmation) return;
 
-    await remove(id);
+    remove.mutate(id);
     navigate("/");
   };
 
@@ -85,9 +85,9 @@ const App = () => {
   useEffect(() => {
     // Get user from localStorage
     initializeUser();
-    // Get blogs on mount
-    initializeBlogs();
-  }, [initializeBlogs, initializeUser]);
+  }, [initializeUser]);
+
+  if (isLoading) return <p>loading...</p>;
 
   return (
     <Container>
