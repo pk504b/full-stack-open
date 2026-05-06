@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
+import persistentUser from "../services/persistentUser";
 
 export const useUser = create((set) => ({
   user: null,
@@ -15,10 +16,13 @@ export const useUser = create((set) => ({
   },
   login: async ({ username, password }) => {
     const user = await loginService.login({ username, password });
+    persistentUser.saveUser(user);
+    blogService.setToken(user.token);
     set(() => ({ user }));
   },
   logout: () => {
-    localStorage.removeItem("bloglist-user");
+    persistentUser.removeUser();
+    blogService.setToken(null);
     set(() => ({ user: null }));
   },
 }));
