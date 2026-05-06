@@ -14,27 +14,25 @@ import {
 } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
 import { useNotification } from "./stores/notification";
-import { useUser } from "./stores/user";
+// import { useUser } from "./stores/user";
 import { useBlogs } from "./hooks/blogs";
+import { useUser } from "./UserContext";
 
 const App = () => {
   const navigate = useNavigate();
+  const { user, login, logout, initializeUser } = useUser();
   const {
     text: notificationText,
     type: notificationType,
     setNotification,
     clearNotification,
   } = useNotification();
-  const { user, initialize: initializeUser, login, logout } = useUser();
   const { blogs, isLoading, add, like, remove } = useBlogs();
 
   const loginUser = async ({ username, password }) => {
     if (!username || !password) return;
     try {
       await login({ username, password });
-      const user = useUser.getState().user;
-      localStorage.setItem("bloglist-user", JSON.stringify(user));
-      blogService.setToken(user.token);
       setNotification({
         text: `Logged in as ${user.username}`,
         type: "success"
@@ -83,9 +81,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    // Get user from localStorage
     initializeUser();
-  }, [initializeUser]);
+  }, []);
 
   if (isLoading) return <p>loading...</p>;
 
