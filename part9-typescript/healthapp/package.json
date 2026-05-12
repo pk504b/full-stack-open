@@ -9,6 +9,7 @@
     "dev": "concurrently \"tsc --watch\" \"npx tsx --watch index.ts\"",
     "calculateBmi": "tsc && npx tsx bmiCalculator.ts",
     "calculateExercises": "tsc && npx tsx exerciseCalculator.ts",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,11 +17,15 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.0",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.2",
     "concurrently": "^9.2.1",
+    "eslint": "^10.3.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.3"
   },
   "dependencies": {
     "express": "^5.0.1"
