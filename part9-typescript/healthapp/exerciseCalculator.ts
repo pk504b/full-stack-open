@@ -26,10 +26,10 @@ const parseExArgs = (args: string[]): ExArgs => {
   return {
     target: Number(args[2]),
     dailyExercises: args.slice(3).map(arg => Number(arg))
-  }
+  };
 };
 
-const calculateExercises = (dailyExercises: number[], target: number): Result => {
+export const calculateExercises = (dailyExercises: number[], target: number): Result => {
   const periodLength = dailyExercises.length;
   const trainingDays = dailyExercises.filter(exercise => exercise > 0).length;
   const average = dailyExercises.reduce((sum, exercise) => sum + exercise, 0) / periodLength;
@@ -49,8 +49,10 @@ const calculateExercises = (dailyExercises: number[], target: number): Result =>
 };
 
 try {
-  const { target, dailyExercises } = parseExArgs(process.argv);
-  console.log(calculateExercises(dailyExercises, target));
+  if (process.argv[1] === import.meta.filename) {
+    const { target, dailyExercises } = parseExArgs(process.argv);
+    console.log(calculateExercises(dailyExercises, target));
+  }
 } catch (error) {
   console.error(error);
 }
