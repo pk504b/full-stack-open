@@ -11,7 +11,7 @@ app.get("/hello", (_req, res) => {
 
 app.get("/bmi", (req, res) => {
   const { weight, height } = req.query;
-  if (!weight || !height) {
+  if (!weight || !height || isNaN(Number(weight)) || isNaN(Number(height))) {
     return res.status(400).json({ error: "malformatted parameters" });
   }
   const bmi = calculateBmi(Number(height), Number(weight));
@@ -37,7 +37,7 @@ app.post("/exercises", (req, res) => {
   return res.json(result);
 });
 
-const PORT = 3001;
+const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
