@@ -17,7 +17,8 @@ const parseArgsBmi = (args: string[]): ArgsBmi => {
     weight: Number(args[3])
   }
 };
-const calculateBmi = (height: number, weight: number): string => {
+
+export const calculateBmi = (height: number, weight: number): string => {
   if (height < 0 || weight < 0) {
     throw new Error("Height and weight must be positive");
   }
@@ -35,8 +36,10 @@ const calculateBmi = (height: number, weight: number): string => {
 };
 
 try {
-  const { height, weight } = parseArgsBmi(process.argv);
-  console.log(calculateBmi(height, weight));
+  if (process.argv[1] === import.meta.filename) {
+    const { height, weight } = parseArgsBmi(process.argv);
+    console.log(calculateBmi(height, weight));
+  }
 } catch (error) {
   console.error(error);
 }
