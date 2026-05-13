@@ -1,15 +1,16 @@
+import { PatientSchema, type NewPatient, type Patient, type PatientSanitized } from '../types.ts';
 import data from '../data/patients.ts';
-import type { NewPatient, Patient, PatientSanitized } from '../types.ts';
 import { v1 as uuid } from 'uuid';
+import { z } from "zod";
 
-const patients: Patient[] = [];
+const patients: Patient[] = z.array(PatientSchema).parse(data);
 
 const getAll = (): Patient[] => {
-  return data;
+  return patients;
 };
 
 const getAllSanitized = (): PatientSanitized[] => {
-  return data.map(({ id, name, dateOfBirth, gender, occupation }) => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => {
     return {
       id,
       name,
