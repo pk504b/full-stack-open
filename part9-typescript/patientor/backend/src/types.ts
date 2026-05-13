@@ -1,10 +1,10 @@
-export type Diagnosis = {
+export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
 };
 
-export type Patient = {
+export interface Patient {
   id: string;
   name: string;
   dateOfBirth: string;
@@ -14,3 +14,13 @@ export type Patient = {
 };
 
 export type PatientSanitized = Omit<Patient, "ssn">;
+
+export type NewPatient = Omit<Patient, "id">;
+
+export const Gender = {
+  MALE: "male",
+  FEMALE: "female",
+  OTHER: "other",
+} as const;
+
+export type Gender = typeof Gender[keyof typeof Gender];
