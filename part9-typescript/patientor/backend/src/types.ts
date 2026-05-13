@@ -12,3 +12,5 @@ export type Patient = {
   gender: string;
   occupation: string;
 };
+
+export type PatientSanitized = Omit<Patient, "ssn">;

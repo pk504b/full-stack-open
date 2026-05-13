@@ -1,11 +1,11 @@
 import data from '../data/patients.ts';
-import type { Patient } from '../types.ts';
+import type { Patient, PatientSanitized } from '../types.ts';
 
 const getAll = (): Patient[] => {
   return data;
 };
 
-const getAllWithoutSSN = (): Omit<Patient, "ssn">[] => {
+const getAllWithoutSSN = (): PatientSanitized[] => {
   return data.map(({ id, name, dateOfBirth, gender, occupation }) => {
     return {
       id,
