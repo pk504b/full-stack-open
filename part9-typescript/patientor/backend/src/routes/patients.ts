@@ -4,7 +4,7 @@ import patientsService from '../services/patients.ts';
 const router: express.Router = express.Router();
 
 router.get('/', (_req, res) => {
-  const data = patientsService.getAll();
+  const data = patientsService.getAllWithoutSSN();
   res.json(data);
 });
 
