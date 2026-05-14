@@ -2,7 +2,9 @@ name: Patientor API Tests
 
 on:
   push:
-    branches: [xmain, xmaster]
+    branches: [main, master]
+    paths:
+      - "part9-ts/**"
 
 jobs:
   test:
@@ -18,15 +20,15 @@ jobs:
           node-version: "24"
 
       - name: Install patientor backend dependencies
-        working-directory: ./patientor/backend
+        working-directory: ./part9-ts/patientor/backend
         run: npm install --legacy-peer-deps
 
       - name: Lint patientor backend
-        working-directory: ./patientor/backend
+        working-directory: ./part9-ts/patientor/backend
         run: npm run lint
 
       - name: Start patientor backend server
-        working-directory: ./patientor/backend
+        working-directory: ./part9-ts/patientor/backend
         run: |
           npm start &
           echo $! > server.pid
@@ -54,7 +56,7 @@ jobs:
 
       - name: Stop patientor backend server
         if: always()
-        working-directory: ./patientor/backend
+        working-directory: ./part9-ts/patientor/backend
         run: |
           if [ -f server.pid ]; then
             kill $(cat server.pid) || true
