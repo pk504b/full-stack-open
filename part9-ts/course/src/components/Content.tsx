@@ -1,13 +1,16 @@
+import type { CoursePart } from "../types";
+import { Part } from "./Part";
+
 interface Part {
   name: string;
   exerciseCount: number;
 }
 
-export const Content = ({ parts }: { parts: Part[] }) => {
+export const Content = ({ parts }: { parts: CoursePart[] }) => {
   return (
     <>
       {parts.map(part => (
-        <p key={part.name}>{part.name} {part.exerciseCount}</p>
+        <Part key={part.name} part={part} />
       ))}
     </>
   );
