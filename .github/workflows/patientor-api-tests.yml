@@ -5,6 +5,7 @@ on:
     branches: [main, master]
     paths:
       - "part9-ts/**"
+      - ".github/workflows/patientor-api-tests.yml"
 
 jobs:
   test:
@@ -35,15 +36,15 @@ jobs:
           sleep 3
 
       - name: Install test dependencies
-        working-directory: ./patientor-api-tests
+        working-directory: ./part9-ts/patientor-api-tests
         run: npm install
 
       - name: Install Playwright browsers
-        working-directory: ./patientor-api-tests
+        working-directory: ./part9-ts/patientor-api-tests
         run: npx playwright install --with-deps chromium
 
       - name: Run API tests
-        working-directory: ./patientor-api-tests
+        working-directory: ./part9-ts/patientor-api-tests
         run: npm test
 
       - name: Upload test report
@@ -51,7 +52,7 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: patientor-api-tests/playwright-report/
+          path: part9-ts/patientor-api-tests/playwright-report/
           retention-days: 30
 
       - name: Stop patientor backend server
