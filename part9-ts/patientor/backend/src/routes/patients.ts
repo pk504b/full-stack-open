@@ -9,6 +9,16 @@ router.get('/', (_req, res) => {
   res.json(data);
 });
 
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  const patient = patientsService.getById(id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.status(404).json({ error: 'patient not found' });
+  }
+});
+
 router.post('/', (req, res) => {
   const newPatient = NewPatientSchema.parse(req.body);
   const addedPatient = patientsService.create(newPatient);
