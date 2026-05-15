@@ -87,7 +87,7 @@ export default function PatientPage() {
           </div>
         ))}
 
-        <h3>Add New Entry</h3>
+        <h3>Add Entry</h3>
         {error && <Alert severity="error" style={{ marginBottom: "1rem" }}>{error}</Alert>}
         <NewEntry addEntry={addEntry} allDiagnoses={diagnoses} />
     </div>

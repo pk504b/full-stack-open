@@ -80,6 +80,16 @@ export default function NewEntry({ addEntry, allDiagnoses }: Props) {
         });
         break;
     }
+    setDescription("");
+    setDate("");
+    setSpecialist("");
+    setDiagnosisCodes([]);
+    setHealthCheckRating(HealthCheckRating.Healthy);
+    setDischargeDate("");
+    setDischargeCriteria("");
+    setEmployerName("");
+    setSickLeaveStartDate("");
+    setSickLeaveEndDate("");
   };
 
   return (
@@ -104,6 +114,7 @@ export default function NewEntry({ addEntry, allDiagnoses }: Props) {
 
       <TextField
         type="date"
+        label="Date"
         fullWidth
         value={date}
         onChange={(e) => setDate(e.target.value)}
@@ -209,7 +220,7 @@ export default function NewEntry({ addEntry, allDiagnoses }: Props) {
       )}
 
       <Button type="submit" variant="contained" color="primary">
-        Add Entry
+        Add New Entry
       </Button>
     </form>
   );

@@ -2,7 +2,7 @@ name: Patientor E2E Tests
 
 on:
   push:
-    branches: [xmain, xmaster]
+    branches: [main, master]
     paths:
       - 'part9-ts/**'
       - '.github/workflows/patientor-e2e-tests.yml'
