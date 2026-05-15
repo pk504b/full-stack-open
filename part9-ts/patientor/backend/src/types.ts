@@ -29,15 +29,55 @@ export const PatientSchema = z.object({
   ...NewPatientSchema.shape,
 });
 
-export interface EntryBase {
-  id: string;
-  description: string;
-  date: string;
-  specialist: string;
-  diagnosisCodes?: Array<Diagnosis['code']>;
-}
+export const DiagnosisSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  latin: z.string().optional(),
+});
 
-const HealthCheckRating = {
+export const BaseEntrySchema = z.object({
+  description: z.string(),
+  date: z.iso.date(),
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional(),
+});
+
+export const HealthCheckEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("HealthCheck"),
+  healthCheckRating: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+  ]),
+});
+
+export const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("OccupationalHealthcare"),
+  employerName: z.string(),
+  sickLeave: z.object({
+    startDate: z.iso.date(),
+    endDate: z.iso.date(),
+  }).optional(),
+});
+
+export const HospitalEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("Hospital"),
+  discharge: z.object({
+    date: z.iso.date(),
+    criteria: z.string(),
+  }),
+});
+
+export const EntrySchema = z.discriminatedUnion("type", [
+  HealthCheckEntrySchema,
+  OccupationalHealthcareEntrySchema,
+  HospitalEntrySchema,
+]);
+
+export type EntryWithoutId = z.infer<typeof EntrySchema>;
+
+export const HealthCheckRating = {
   Healthy: 0,
   LowRisk: 1,
   HighRisk: 2,
@@ -46,34 +86,7 @@ const HealthCheckRating = {
 
 export type HealthCheckRating = typeof HealthCheckRating[keyof typeof HealthCheckRating];
 
-export interface EntryHealthCheck extends EntryBase {
-  type: 'HealthCheck';
-  healthCheckRating: HealthCheckRating;
-}
-
-export interface EntryOccupationalHealthcare extends EntryBase {
-  type: 'OccupationalHealthcare';
-  employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-export interface EntryHospital extends EntryBase {
-  type: 'Hospital';
-  discharge: {
-    date: string;
-    criteria: string;
-  };
-}
-
-export type Entry = EntryHealthCheck | EntryOccupationalHealthcare | EntryHospital;
-
-// Define special omit for unions
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
-
-export type EntryWithoutId = UnionOmit<Entry, 'id'>;
+export type Entry = EntryWithoutId & { id: string };
 
 export interface Patient {
   id: string;

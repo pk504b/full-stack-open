@@ -1,6 +1,6 @@
 import express from 'express';
 import patientsService from '../services/patients.ts';
-import { NewPatientSchema } from "../types.ts";
+import { NewPatientSchema, EntrySchema } from "../types.ts";
 
 const router: express.Router = express.Router();
 
@@ -23,6 +23,13 @@ router.post('/', (req, res) => {
   const newPatient = NewPatientSchema.parse(req.body);
   const addedPatient = patientsService.create(newPatient);
   res.json(addedPatient);
+});
+
+router.post('/:id/entries', (req, res) => {
+  const { id: patientId } = req.params;
+  const newEntry = EntrySchema.parse(req.body);
+  const addedEntry = patientsService.addEntry(patientId, newEntry);
+  res.json(addedEntry);
 });
 
 export default router;

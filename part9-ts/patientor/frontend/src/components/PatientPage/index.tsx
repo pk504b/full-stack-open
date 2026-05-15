@@ -1,17 +1,41 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import patientService from "../services/patients";
-import { Diagnosis, Gender, Patient } from "../types";
+import patientService from "../../services/patients";
+import { Diagnosis, EntryWithoutId, Gender, Patient } from "../../types";
 import { Typography } from "@mui/material";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
-import diagnosesServices from "../services/diagnoses";
+import diagnosesServices from "../../services/diagnoses";
+import ShowEntry from "./Entry";
+import NewEntry from "./NewEntry";
+import axios from "axios";
+import { Alert } from "@mui/material";
 
 export default function PatientPage() {
   const [patient, setPatient] = useState<Patient>();
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  const [error, setError] = useState<string>();
   const { id } = useParams();
+
+  const addEntry = async (entry: EntryWithoutId) => {
+    try {
+      const addedEntry = await patientService.addEntry(id!, entry);
+      const updatedPatient = { ...patient!, entries: [...patient!.entries, addedEntry] };
+      setPatient(updatedPatient);
+      setError(undefined);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const message = err?.response?.data.error.map((issue: any) => `invalid ${issue.path}`).join(', ');
+        console.error(message);
+        setError(message);
+      } else {
+        console.error("Unknown error", err);
+        setError("Unknown error");
+      }
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -49,36 +73,23 @@ export default function PatientPage() {
           Entries
         </Typography>
         {patient?.entries.map((entry) => (
-          <div key={entry.id}>
-            {entry.date} <i>{entry.description}</i>
+          <div key={entry.id} style={{ border: "solid", margin: "0.5em", padding: "0.5em" }}>
+            {entry.date} <br />
+            <i>{entry.description}</i>
             <ul style={{ margin: "0" }}>
               {entry.diagnosisCodes?.map((code) => (
                 <li key={code}>{code} {diagnoses?.find((d) => d.code === code)?.name}</li>
               ))}
             </ul>
-            {entry.type === 'Hospital' && (
-              <>
-                discharge: {entry.discharge.date}
-                <br />
-                criteria: {entry.discharge.criteria}
-              </>
-            )}
-            {entry.type === 'OccupationalHealthcare' && (
-              <>
-                employer: {entry.employerName}
-                <br />
-                sick leave: {entry.sickLeave?.startDate} - {entry.sickLeave?.endDate}
-              </>
-            )}
-            {entry.type === 'HealthCheck' && (
-              <>
-                health check rating: {entry.healthCheckRating}
-              </>
-            )}
+            <ShowEntry entry={entry} />
             <br />
-            <br />
+            diagnose by {entry.specialist}
           </div>
         ))}
+
+        <h3>Add New Entry</h3>
+        {error && <Alert severity="error" style={{ marginBottom: "1rem" }}>{error}</Alert>}
+        <NewEntry addEntry={addEntry} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { type NewPatient, type Patient, type PatientSanitized } from '../types.ts';
+import { type Entry, type EntryWithoutId, type NewPatient, type Patient, type PatientSanitized } from '../types.ts';
 import data from '../data/patients.ts';
 import { v1 as uuid } from 'uuid';
 
@@ -37,9 +37,24 @@ const create = (object: NewPatient): Patient => {
   patients.push(newPatient);
   return newPatient;
 };
+
+const addEntry = (id: string, object: EntryWithoutId): Entry => {
+  const patient = patients.find((patient) => patient.id === id);
+  if (!patient) {
+    throw new Error(`Patient with id ${id} not found`);
+  }
+  const newEntry: Entry = {
+    ...object,
+    id: uuid(),
+  };
+  patient.entries.push(newEntry);
+  return newEntry;
+}
+
 export default {
   getAll,
   getAllSanitized,
   getById,
   create,
+  addEntry,
 };
