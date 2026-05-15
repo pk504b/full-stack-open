@@ -29,11 +29,51 @@ export const PatientSchema = z.object({
   ...NewPatientSchema.shape,
 });
 
-// export type Patient = z.infer<typeof PatientSchema>;
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface Entry {
+export interface EntryBase {
+  id: string;
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnosis['code']>;
 }
+
+const HealthCheckRating = {
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3,
+} as const;
+
+export type HealthCheckRating = typeof HealthCheckRating[keyof typeof HealthCheckRating];
+
+export interface EntryHealthCheck extends EntryBase {
+  type: 'HealthCheck';
+  healthCheckRating: HealthCheckRating;
+}
+
+export interface EntryOccupationalHealthcare extends EntryBase {
+  type: 'OccupationalHealthcare';
+  employerName: string;
+  sickLeave?: {
+    startDate: string;
+    endDate: string;
+  };
+}
+
+export interface EntryHospital extends EntryBase {
+  type: 'Hospital';
+  discharge: {
+    date: string;
+    criteria: string;
+  };
+}
+
+export type Entry = EntryHealthCheck | EntryOccupationalHealthcare | EntryHospital;
+
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+export type EntryWithoutId = UnionOmit<Entry, 'id'>;
 
 export interface Patient {
   id: string;
