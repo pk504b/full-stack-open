@@ -14,7 +14,7 @@ import { Alert } from "@mui/material";
 
 export default function PatientPage() {
   const [patient, setPatient] = useState<Patient>();
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [error, setError] = useState<string>();
   const { id } = useParams();
 
@@ -89,7 +89,7 @@ export default function PatientPage() {
 
         <h3>Add New Entry</h3>
         {error && <Alert severity="error" style={{ marginBottom: "1rem" }}>{error}</Alert>}
-        <NewEntry addEntry={addEntry} />
+        <NewEntry addEntry={addEntry} allDiagnoses={diagnoses} />
     </div>
   );
 }
