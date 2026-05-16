@@ -114,6 +114,7 @@ const typeDefs = /* GraphQL */ `
   }
   type Mutation {
     addBook(title: String!, author: String!, published: Int!, genres: [String!]!): Book!
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
 
   # QUERY
@@ -153,6 +154,14 @@ const resolvers = {
       }
       books.push(book)
       return book
+    },
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name === args.name)
+      if (!author) return null
+
+      const updatedAuthor = { ...author, born: args.setBornTo }
+      authors.splice(authors.indexOf(author), 1, updatedAuthor)
+      return updatedAuthor
     },
   },
 }
