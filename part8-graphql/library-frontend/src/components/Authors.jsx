@@ -8,11 +8,7 @@ const Authors = (props) => {
 
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
-  const [editAuthor] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [
-      { query: GET_AUTHORS }
-    ],
-  })
+  const [editAuthor] = useMutation(EDIT_AUTHOR)
 
   const updateAuthor = async (event) => {
     event.preventDefault()
@@ -22,6 +18,8 @@ const Authors = (props) => {
         setBornTo: parseInt(born),
       },
     })
+    setName('')
+    setBorn('')
   }
 
   if (!props.show || !authors) {
@@ -53,10 +51,14 @@ const Authors = (props) => {
         <div>
           <label>
             name
-            <input
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            />
+            <select value={name} onChange={({ target }) => setName(target.value)}>
+              <option value=""></option>
+              {authors.map((a) => (
+                <option key={a.id} value={a.name}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
         <div>
