@@ -3,12 +3,11 @@ import { GET_AUTHORS } from '../queries'
 
 const Authors = (props) => {
   const result = useQuery(GET_AUTHORS)
+  const authors = result.data?.allAuthors
 
-  if (!props.show || !result.data) {
+  if (!props.show || !authors) {
     return null
   }
-
-  console.log(result.data)
 
   return (
     <div>
@@ -20,7 +19,7 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {result.data.allAuthors.map((a) => (
+          {authors.map((a) => (
             <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
