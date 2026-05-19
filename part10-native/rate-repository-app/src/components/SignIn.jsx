@@ -2,6 +2,9 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useSignIn } from '../hooks/useSignIn';
+import useAuthStorage from '../hooks/useAuthStorage';
+import { useNavigate } from "react-router-native";
+import { useApolloClient } from '@apollo/client/react';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,6 +51,9 @@ const validationSchema = yup.object().shape({
 
 const SignIn = () => {
   const [signIn] = useSignIn();
+  const authStorage = useAuthStorage();
+  const navigate = useNavigate();
+  const apolloClient = useApolloClient();
 
   const formik = useFormik({
     initialValues: {
@@ -57,10 +63,11 @@ const SignIn = () => {
     validationSchema,
     onSubmit: async (values) => {
       const { username, password } = values;
-      console.log({username, password});
       try {
         const { data } = await signIn({ username, password });
-        console.log(data);
+        await authStorage.setAccessToken(data.authenticate.accessToken);
+        apolloClient.resetStore();
+        navigate('/repositories');
       } catch (error) {
         console.log(error);
       }
