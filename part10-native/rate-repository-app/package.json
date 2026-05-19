@@ -10,10 +10,12 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@apollo/client": "^4.1.9",
     "expo": "~55.0.24",
     "expo-constants": "~55.0.16",
     "expo-status-bar": "~55.0.6",
     "formik": "^2.4.9",
+    "graphql": "^16.14.0",
     "react": "19.2.0",
     "react-native": "0.83.6",
     "react-router-native": "^6.30.3",

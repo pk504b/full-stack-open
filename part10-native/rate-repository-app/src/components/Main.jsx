@@ -18,7 +18,7 @@ const Main = () => {
       <AppBar />
       <Routes>
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/repositories" element={<RepositoryList />} />
+        <Route path="*" element={<RepositoryList />} />
       </Routes>
     </View>
   );

@@ -92,6 +92,6 @@ const SignIn = () => {
       </Pressable>
     </View>
   );
-};
+}
 
 export default SignIn;
