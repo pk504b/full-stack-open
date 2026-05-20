@@ -3,12 +3,7 @@ import RepositoryItem from './RepositoryItem';
 import { useQuery } from '@apollo/client/react';
 import { GET_REPOSITORIES } from '../graphql/queries';
 
-const RepositoryList = () => {
-  const { data, loading } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: 'cache-and-network',
-  });
-  if (loading) return <Text>Loading...</Text>;
-
+export const RepositoryListContainer = ({ data }) => {
   const repositoryNodes = data
     ? data.repositories.edges.map((edge) => edge.node)
     : [];
@@ -18,7 +13,16 @@ const RepositoryList = () => {
       data={repositoryNodes}
       renderItem={({ item }) => <RepositoryItem repository={item} />}
     />
-  );
+  )
+}
+
+const RepositoryList = () => {
+  const { data, loading } = useQuery(GET_REPOSITORIES, {
+    fetchPolicy: 'cache-and-network',
+  });
+  if (loading) return <Text>Loading...</Text>;
+
+  return <RepositoryListContainer data={data} />;
 };
 
 export default RepositoryList;
