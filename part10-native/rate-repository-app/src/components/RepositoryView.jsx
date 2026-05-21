@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, FlatList, View } from 'react-native';
 import { useParams } from "react-router-native";
 import { useQuery } from '@apollo/client/react';
 import { GET_REPOSITORY } from '../graphql/queries';
@@ -36,6 +36,58 @@ export default function RepositoryView() {
       <Pressable onPress={() => Linking.openURL(repository.url)} style={styles.button}>
         <Text style={styles.buttonText}>View on Github</Text>
       </Pressable>
+
+      <FlatList
+        data={repository.reviews.edges}
+        renderItem={({ item }) => (
+          <Review review={item.node} />
+        )}
+      />
     </>
   )
 };
+
+const reviewStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+  },
+  rating: {
+    alignSelf: 'flex-start',
+    borderStyle: 'solid',
+    borderWidth: 4,
+    borderColor: '#6b4eca',
+    padding: 10,
+    margin: 10,
+    borderRadius: 100,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  createdAt: {
+    fontSize: 14,
+  },
+  text: {
+    marginTop: 10,
+    fontSize: 14,
+    maxWidth: '90%',
+  },
+});
+const Review = ({ review }) => {
+  return (
+    <View style={reviewStyles.container}>
+        <Text style={reviewStyles.rating}>{review.rating}</Text>
+      <View>
+        <Text style={reviewStyles.username}>{review.user.username}</Text>
+        <Text style={reviewStyles.createdAt}>{new Date(review.createdAt).toLocaleDateString()}</Text>
+        <Text style={reviewStyles.text}>{review.text}</Text>
+      </View>
+    </View>
+  )
+}
