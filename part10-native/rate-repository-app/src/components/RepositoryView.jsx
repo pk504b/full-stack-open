@@ -79,7 +79,7 @@ const reviewStyles = StyleSheet.create({
     maxWidth: '90%',
   },
 });
-const Review = ({ review }) => {
+export const Review = ({ review }) => {
   return (
     <View style={reviewStyles.container}>
         <Text style={reviewStyles.rating}>{review.rating}</Text>
