@@ -4,8 +4,7 @@ import { useQuery } from '@apollo/client/react';
 import { GET_REPOSITORIES } from '../graphql/queries';
 import { useNavigate } from 'react-router-native';
 
-export const RepositoryListContainer = ({ data }) => {
-  const navigate = useNavigate();
+export const RepositoryListContainer = ({ data, onRepositoryPress }) => {
   const repositoryNodes = data
     ? data.repositories.edges.map((edge) => edge.node)
     : [];
@@ -14,7 +13,7 @@ export const RepositoryListContainer = ({ data }) => {
     <FlatList
       data={repositoryNodes}
       renderItem={({ item }) => (
-        <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+        <Pressable onPress={() => onRepositoryPress(item.id)}>
           <RepositoryItem repository={item} />
         </Pressable>
       )}
@@ -26,9 +25,16 @@ const RepositoryList = () => {
   const { data, loading } = useQuery(GET_REPOSITORIES, {
     fetchPolicy: 'cache-and-network',
   });
+  const navigate = useNavigate();
+
   if (loading) return <Text>Loading...</Text>;
 
-  return <RepositoryListContainer data={data} />;
+  return (
+    <RepositoryListContainer
+      data={data}
+      onRepositoryPress={(id) => navigate(`/repository/${id}`)}
+    />
+  );
 };
 
 export default RepositoryList;

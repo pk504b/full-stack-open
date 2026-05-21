@@ -8,14 +8,15 @@ import useAuthStorage from '../hooks/useAuthStorage';
 const styles = StyleSheet.create({
   container: {
     paddingTop: 60 || Constants.statusBarHeight,
+    paddingBottom: 20,
     backgroundColor: '#24292e',
     color: '#fff',
-    padding: 20,
+    padding: 10,
     flexDirection: 'row',
     gap: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -42,6 +43,16 @@ const AppBar = () => {
 
   return <View style={styles.container}>
     <ScrollView horizontal>
+      <Pressable >
+        <Link to="/repositories" style={styles.button}>
+          <Text style={styles.title}>Repositories</Text>
+        </Link>
+      </Pressable>
+      <Pressable>
+        <Link to="/create-review" style={styles.button}>
+          <Text style={styles.title}>Create Review</Text>
+        </Link>
+      </Pressable>
       {data && data.me ? (
         <Pressable style={styles.button} onPress={handleSignout}>
           <Text style={styles.title}>Sign out</Text>
@@ -53,11 +64,6 @@ const AppBar = () => {
           </Link>
         </Pressable>
       )}
-      <Pressable >
-        <Link to="/repositories" style={styles.button}>
-          <Text style={styles.title}>Repositories</Text>
-        </Link>
-      </Pressable>
     </ScrollView>
   </View>;
 };
