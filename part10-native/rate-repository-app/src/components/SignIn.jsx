@@ -49,34 +49,19 @@ const validationSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
-  const authStorage = useAuthStorage();
-  const navigate = useNavigate();
-  const apolloClient = useApolloClient();
-
+export const SignInContainer = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     validationSchema,
-    onSubmit: async (values) => {
-      const { username, password } = values;
-      try {
-        const { data } = await signIn({ username, password });
-        await authStorage.setAccessToken(data.authenticate.accessToken);
-        apolloClient.resetStore();
-        navigate('/repositories');
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    onSubmit
   });
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in</Text>
+      <Text style={styles.title}>Sign in to the app</Text>
       <TextInput
         placeholder="Username"
         style={[
@@ -111,4 +96,25 @@ const SignIn = () => {
   );
 }
 
-export default SignIn;
+const SignIn = () => {
+  const [signIn] = useSignIn();
+  const authStorage = useAuthStorage();
+  const navigate = useNavigate();
+  const apolloClient = useApolloClient();
+
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+    try {
+      const { data } = await signIn({ username, password });
+      await authStorage.setAccessToken(data.authenticate.accessToken);
+      apolloClient.resetStore();
+      navigate('/repositories');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return <SignInContainer onSubmit={onSubmit} />;
+}
+
+export default SignIn
