@@ -1,9 +1,11 @@
-import { FlatList, Text } from 'react-native';
+import { FlatList, Pressable, Text } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 import { useQuery } from '@apollo/client/react';
 import { GET_REPOSITORIES } from '../graphql/queries';
+import { useNavigate } from 'react-router-native';
 
 export const RepositoryListContainer = ({ data }) => {
+  const navigate = useNavigate();
   const repositoryNodes = data
     ? data.repositories.edges.map((edge) => edge.node)
     : [];
@@ -11,7 +13,11 @@ export const RepositoryListContainer = ({ data }) => {
   return (
     <FlatList
       data={repositoryNodes}
-      renderItem={({ item }) => <RepositoryItem repository={item} />}
+      renderItem={({ item }) => (
+        <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+          <RepositoryItem repository={item} />
+        </Pressable>
+      )}
     />
   )
 }
