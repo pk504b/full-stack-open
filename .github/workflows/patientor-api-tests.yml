@@ -2,7 +2,7 @@ name: Patientor API Tests
 
 on:
   push:
-    branches: [main, master]
+    branches: [ xmain, xmaster ]
     paths:
       - "part9-ts/**"
       - ".github/workflows/patientor-api-tests.yml"

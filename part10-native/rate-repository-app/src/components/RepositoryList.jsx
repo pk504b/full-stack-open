@@ -7,7 +7,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import useDebounce from '../hooks/useDebounce';
 
-export const RepositoryListContainer = ({ data, onRepositoryPress }) => {
+export const RepositoryListContainer = ({ data, onRepositoryPress, onEndReached }) => {
   const repositoryNodes = data
     ? data.repositories.edges.map((edge) => edge.node)
     : [];
@@ -20,6 +20,8 @@ export const RepositoryListContainer = ({ data, onRepositoryPress }) => {
           <RepositoryItem repository={item} />
         </Pressable>
       )}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
     />
   )
 }
@@ -38,6 +40,12 @@ const RepositoryList = () => {
     fetchPolicy: 'cache-and-network',
   });
   const navigate = useNavigate();
+
+  const onEndReached = () => {
+    // if (data && data.repositories.pageInfo.hasNextPage) {
+      
+    // }
+  }
 
   if (loading && !data) return <Text>Loading...</Text>;
 
@@ -63,6 +71,7 @@ const RepositoryList = () => {
       <RepositoryListContainer
         data={data}
         onRepositoryPress={(id) => navigate(`/repository/${id}`)}
+        onEndReached={onEndReached}
       />
     </>
   );

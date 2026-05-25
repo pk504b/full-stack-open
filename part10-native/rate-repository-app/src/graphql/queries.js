@@ -44,6 +44,10 @@ export const GET_REPOSITORIES = gql`
           ratingAverage
         }
       }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
