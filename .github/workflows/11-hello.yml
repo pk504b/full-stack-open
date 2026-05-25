@@ -12,3 +12,7 @@ jobs:
       - name: print hello
         run: | 
           echo "Hello World"
+      - name: print date
+        run: echo "The date is $(date)"
+      - name: print dir contents
+        run: ls -l
