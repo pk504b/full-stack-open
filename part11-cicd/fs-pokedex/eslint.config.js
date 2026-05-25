@@ -73,5 +73,15 @@ module.exports = [
       'no-console': 'error',
       'react/prop-types': 0
     }
+  },
+  {
+    files: ['jest.setup.js'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        ...globals.node,
+        ...globals.jest
+      }
+    }
   }
 ]
