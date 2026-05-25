@@ -15,9 +15,9 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-      - name: Change directory
-        run: cd part11-cicd/fs-pokedex
       - name: Install dependencies
+        working-directory: ./part11-cicd/fs-pokedex
         run: npm install
       - name: Lint code
+        working-directory: ./part11-cicd/fs-pokedex
         run: npm run eslint
