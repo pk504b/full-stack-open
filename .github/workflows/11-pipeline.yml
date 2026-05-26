@@ -21,3 +21,9 @@ jobs:
       - name: Lint code
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run eslint
+      - name: Run tests
+        working-directory: ./part11-cicd/fs-pokedex
+        run: npm run test
+      - name: Build code
+        working-directory: ./part11-cicd/fs-pokedex
+        run: npm run build
