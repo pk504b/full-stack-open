@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    pull_request:
+      branches: [main]
+      types: [opened, synchronize]
 
 jobs:
   simple_deployment_pipeline:
@@ -34,4 +37,5 @@ jobs:
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run build
       - name: Deploy to Render
+        if: ${{ github.event_name == 'push' }}
         run: curl ${{ secrets.RENDER_DEPLOY_SECRET }}
