@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 5001
 app.use(express.static('dist'))
 
 app.get('/health', (req, res) => {
+  // eslint-disable-next-line no-constant-condition
+  if (true) throw('error...  ')
   res.send('ok')
 })
 
