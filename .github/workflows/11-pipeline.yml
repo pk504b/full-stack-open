@@ -33,3 +33,5 @@ jobs:
       - name: Build code
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run build
+      - name: Deploy to Render
+        run: curl ${{ secrets.RENDER_DEPLOY_SECRET }}
