@@ -27,18 +27,18 @@ jobs:
       - name: Run unit tests
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run test
-      # - name:  Install Playwright Browsers
-      #   working-directory: ./part11-cicd/fs-pokedex
-      #   run: npx playwright install --with-deps
-      # - name: Run e2e tests
-      #   working-directory: ./part11-cicd/fs-pokedex
-      #   run: npm run test:e2e
+      - name:  Install Playwright Browsers
+        working-directory: ./part11-cicd/fs-pokedex
+        run: npx playwright install --with-deps
+      - name: Run e2e tests
+        working-directory: ./part11-cicd/fs-pokedex
+        run: npm run test:e2e
       - name: Build code
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run build
-      # - name: Deploy to Render
-      #   if: ${{ github.event_name == 'push' }}
-      #   run: curl ${{ secrets.RENDER_DEPLOY_SECRET }}
+      - name: Deploy to Render
+        if: ${{ github.event_name == 'push' }}
+        run: curl ${{ secrets.RENDER_DEPLOY_SECRET }}
   tag_release:
     runs-on: ubuntu-latest
     needs: simple_deployment_pipeline
