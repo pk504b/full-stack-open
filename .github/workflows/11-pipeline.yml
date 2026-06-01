@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-    pull_request:
-      branches: [main]
-      types: [opened, synchronize]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
   simple_deployment_pipeline:
@@ -36,6 +36,10 @@ jobs:
       - name: Build code
         working-directory: ./part11-cicd/fs-pokedex
         run: npm run build
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to Render
         if: ${{ github.event_name == 'push' }}
         run: curl ${{ secrets.RENDER_DEPLOY_SECRET }}
